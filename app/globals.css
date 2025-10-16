@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --biru: #4285f4;
+  --pink: #ff6ca7;
+  --kuning: #fbbc05;
+  --hijau: #346641;
+  --merah: #ff1d21;
+}
+
+@theme inline {
+  --font-poppins: var(--font-poppins);
+  --font-lato: var(--font-lato);
+  --font-heading: var(--font-poppins);
+  --font-body: var(--font-lato);
+
+  --color-biru: var(--biru);
+  --color-pink: var(--pink);
+  --color-kuning: var(--kuning);
+  --color-hijau: var(--hijau);
+  --color-merah: var(--merah);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ededed;
+  }
+}
+
+@layer utilities {
+  /* Mobile stroke (default) */
+  .text-stroke-mobile {
+    -webkit-text-stroke: 0.3px black;
+    text-stroke: 0.3px black;
+  }
+
+  .text-stroke {
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+  }
+
+  /* Desktop stroke */
+  @media (min-width: 768px) {
+    .text-stroke-desktop {
+      -webkit-text-stroke: 1px black;
+      text-stroke: 1px black;
+    }
+  }
+
+  .text-stroke-hover:hover {
+    -webkit-text-stroke: 1px black;
+    text-stroke: 1px black;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
