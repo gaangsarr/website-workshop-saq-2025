@@ -6,6 +6,8 @@
   --kuning: #fbbc05;
   --hijau: #346641;
   --merah: #ff1d21;
+  --oren: #ffa726;
+  --teal: #009688;
 }
 
 @theme inline {
@@ -19,6 +21,8 @@
   --color-kuning: var(--kuning);
   --color-hijau: var(--hijau);
   --color-merah: var(--merah);
+  --color-oren: var(--oren);
+  --color-teal: var(--teal);
 }
 
 @media (prefers-color-scheme: light) {

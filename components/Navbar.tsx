@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,39 +38,49 @@ export default function Navbar() {
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/70 backdrop-blur-lg shadow-lg"
+          ? "bg-white/60 backdrop-blur-lg shadow-lg"
           : "bg-white shadow-md"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo Section */}
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-            onClick={closeMenu}
-          >
-            <Image
-              src="/logo.png"
-              width={65}
-              height={65}
-              alt="Workshop SAQ Logo"
-              className="w-12 h-12 md:w-16 md:h-16"
-            />
-            <div className="flex flex-col group">
-              <span className="font-heading font-bold text-lg leading-tight transition-colors md:text-2xl group-hover:text-kuning">
-                Workshop
-              </span>
-              <div className="leading-tight">
-                <span className="font-heading font-bold text-lg transition-colors md:text-2xl group-hover:text-biru">
-                  SAQ{" "}
+          {/* Logo Section with Unified Hover Animation */}
+          <motion.div whileHover="hover" className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex items-center gap-3"
+              onClick={closeMenu}
+            >
+              {/* Animated Logo */}
+              <motion.div
+                variants={{
+                  hover: { rotate: 360, scale: 1.1 },
+                }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                <Image
+                  src="/logo.png"
+                  width={65}
+                  height={65}
+                  alt="Workshop SAQ Logo"
+                  className="w-12 h-12 md:w-16 md:h-16"
+                />
+              </motion.div>
+              <div className="flex flex-col group">
+                <span className="font-heading font-bold text-lg leading-tight transition-colors md:text-2xl group-hover:text-kuning">
+                  Workshop
                 </span>
-                <span className="font-heading font-bold text-lg transition-colors md:text-2xl group-hover:text-pink">
-                  2025
-                </span>
+                <div className="leading-tight">
+                  <span className="font-heading font-bold text-lg transition-colors md:text-2xl group-hover:text-biru">
+                    SAQ{" "}
+                  </span>
+                  <span className="font-heading font-bold text-lg transition-colors md:text-2xl group-hover:text-pink">
+                    2025
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation Menu */}
           <div className="hidden md:flex items-center gap-12">
@@ -156,7 +167,7 @@ export default function Navbar() {
       {isMenuOpen && (
         <div
           onClick={closeMenu}
-          className="md:hidden fixed inset-0 bg-black/20 z-40"
+          className="md:hidden fixed inset-0"
           aria-hidden="true"
         ></div>
       )}

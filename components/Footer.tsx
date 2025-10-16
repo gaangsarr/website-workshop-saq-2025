@@ -104,7 +104,7 @@ export default function Footer() {
               <li className="flex items-center gap-3 text-white text-sm md:text-base">
                 <Phone className="w-5 h-5 flex-shrink-0" />
                 <a
-                  href="tel:+6281333529018"
+                  href="https://wa.me/6281333529018"
                   className="hover:text-kuning transition-colors"
                 >
                   +62 813-3352-9018 (Megan)
