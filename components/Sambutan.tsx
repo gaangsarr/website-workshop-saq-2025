@@ -59,7 +59,7 @@ export default function Sambutan() {
               {/* Left - Photo (Nempel ke bawah) */}
               <div className="relative w-auto h-full flex-shrink-0 flex justify-start self-end">
                 <Image
-                  src="/pak-dody-ws.png"
+                  src="/pak-dod-ws-25.png"
                   width={352}
                   height={448}
                   alt="Dody, S.Kom., M.Kom."

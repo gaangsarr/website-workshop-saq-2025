@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { poppins, lato } from "./fonts";
-import Navbar from "@/components/Navbar";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Workshop SAQ 2025",
-  description: "Website Workshop Lab. SAQ ITPLN 2025",
+  description: "Build Your First AI Agent - Workshop SAQ 2025",
 };
 
 export default function RootLayout({
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

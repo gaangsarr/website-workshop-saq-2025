@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "question": "Apa itu Workshop SAQ 2025?",
+    "answer": "Workshop SAQ 2025 merupakan kegiatan tahunan yang diselenggarakan oleh Laboratorium Software Architecture and Quality (SAQ), Institut Teknologi PLN. Acara ini dirancang sebagai wadah kolaborasi dan pembelajaran bagi mahasiswa serta praktisi industri yang tertarik pada bidang arsitektur perangkat lunak, kualitas sistem, dan teknologi pengembangan modern."
+  },
+  {
+    "id": 2,
+    "question": "Kapan Workshop SAQ 2025 dilaksanakan?",
+    "answer": "Workshop SAQ 2025 akan dilaksanakan pada hari Sabtu, 22 November 2025, pukul 08:00 WIB hingga selesai, bertempat di Ruang Pembangkit - Institut Teknologi PLN."
+  },
+  {
+    "id": 3,
+    "question": "Siapa yang bisa mengikuti workshop ini?",
+    "answer": "Workshop ini terbuka untuk mahasiswa, praktisi industri, dan siapa saja yang tertarik mempelajari teknologi AI dan otomasi keuangan menggunakan platform n8n. Tidak ada prasyarat khusus, namun pemahaman dasar tentang teknologi akan sangat membantu."
+  },
+  {
+    "id": 4,
+    "question": "Berapa biaya untuk mengikuti workshop?",
+    "answer": "Terdapat 2 paket pilihan: Paket Mandiri (Pre-Sale: Rp 45.000, Normal: Rp 55.000) untuk 1 orang, dan Paket Bertiga (Pre-Sale: Rp 120.000, Normal: Rp 135.000) untuk 3 orang. Harga pre-sale berlaku hingga tanggal yang ditentukan."
+  },
+  {
+    "id": 5,
+    "question": "Apa yang akan dipelajari di workshop ini?",
+    "answer": "Peserta akan belajar membangun AI Agent pertama mereka untuk otomasi keuangan personal dan freelance menggunakan platform n8n. Workshop mencakup integrasi AI, otomasi workflow, dan penerapan praktis dalam manajemen keuangan."
+  }
+]

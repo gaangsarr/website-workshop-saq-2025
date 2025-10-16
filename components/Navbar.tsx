@@ -86,10 +86,10 @@ export default function Navbar() {
               Register
             </Link>
             <Link
-              href="/contact"
+              href="/FAQ"
               className="font-heading text-lg hover:text-pink transition-colors"
             >
-              Contact
+              FAQ
             </Link>
           </div>
 
@@ -142,11 +142,11 @@ export default function Navbar() {
               Register
             </Link>
             <Link
-              href="/contact"
+              href="/FAQ"
               onClick={closeMenu}
               className="block font-heading text-lg px-6 py-3 hover:bg-kuning hover:text-white transition-all rounded-lg mx-2"
             >
-              Contact
+              FAQ
             </Link>
           </div>
         </div>
