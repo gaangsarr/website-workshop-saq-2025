@@ -104,7 +104,11 @@ export default function Tiket() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <section ref={ref} className="relative py-16 md:py-24 bg-hijau">
+    <section
+      id="register"
+      ref={ref}
+      className="relative py-16 md:py-24 bg-hijau"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title - Fade in dari atas */}
         <motion.h2
@@ -162,28 +166,6 @@ export default function Tiket() {
             index={3}
           />
         </div>
-
-        {/* Kursi Terbatas Text - Pulse Animation */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <motion.p
-            animate={{
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="font-heading font-black text-4xl md:text-5xl lg:text-6xl text-merah text-stroke-mobile text-stroke-desktop"
-          >
-            KURSI TERBATAS!
-          </motion.p>
-        </motion.div>
       </div>
     </section>
   );

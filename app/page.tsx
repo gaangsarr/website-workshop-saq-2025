@@ -1,9 +1,11 @@
 import Hero from "@/components/Hero";
 import MengulikWS from "@/components/MengulikWS";
+import ScrollingText from "@/components/ScrollingText";
 import Sambutan from "@/components/Sambutan";
 import Tiket from "@/components/Tiket";
 import FAQ from "@/components/FAQ";
 import SpecialThanks from "@/components/SpecialThanks";
+import ScrollingText1 from "@/components/ScrollingText-KURSITERBATAS";
 
 export default function Home() {
   return (
@@ -11,7 +13,9 @@ export default function Home() {
       <Hero />
       <MengulikWS />
       <Sambutan />
+      <ScrollingText />
       <Tiket />
+      <ScrollingText1 />
       <FAQ />
       <SpecialThanks />
     </main>

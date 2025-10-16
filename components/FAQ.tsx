@@ -81,7 +81,7 @@ export default function FAQ() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <section ref={ref} className="relative py-16 md:py-24 bg-white">
+    <section id="faq" ref={ref} className="relative py-16 md:py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title - Fade in dari atas */}
         <motion.h2

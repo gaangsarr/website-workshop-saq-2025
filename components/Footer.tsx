@@ -54,18 +54,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/register"
+                  href="#register"
                   className="text-white hover:text-kuning transition-colors text-sm md:text-base"
                 >
                   Register
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-white hover:text-kuning transition-colors text-sm md:text-base"
-                >
-                  Contact
                 </Link>
               </li>
               <li>

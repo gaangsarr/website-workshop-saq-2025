@@ -62,3 +62,31 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Smooth Scroll Behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll Offset untuk Sticky Navbar */
+section[id] {
+  scroll-margin-top: 5rem; /* 80px = height navbar */
+}
+
+/* Optional: Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4169e1; /* Biru */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffd700; /* Kuning */
+}
