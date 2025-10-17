@@ -72,7 +72,7 @@ export default function DaftarMandiri() {
       };
 
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbylxCwG0FN59At387lkIMP2t3EnrGGTKCd08M7q3qa557EKKsx81x_3I3Yy4-ZSwow4/exec";
+        "https://script.google.com/macros/s/AKfycbzwep3HUYLlTi63zMfUSz3l008VSY210dPtxX_OHpoij7pl2_KvoGNSUeTv_edWWf5dtg/exec";
 
       await fetch(SCRIPT_URL, {
         method: "POST",
