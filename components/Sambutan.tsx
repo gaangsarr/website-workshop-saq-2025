@@ -12,13 +12,15 @@ export default function Sambutan() {
   const card2InView = useInView(card2Ref, { once: true, amount: 0.3 });
 
   return (
-    <section className="relative py-16 md:py-24 bg-white">
+    <section className="relative py-16 md:py-24 bg-white overflow-hidden">
+      {" "}
+      {/* ← Add overflow-hidden */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="space-y-8 md:space-y-12">
-          {/* Card 1 - Kepala Lab (Biru) - Slide from Left */}
+          {/* Card 1 - Kepala Lab (Biru) */}
           <motion.div
             ref={card1Ref}
-            initial={{ opacity: 0, x: -100 }}
+            initial={{ opacity: 0, x: -50 }}
             animate={card1InView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             whileHover={{ scale: 1.02 }}
@@ -26,7 +28,6 @@ export default function Sambutan() {
           >
             {/* Mobile Layout */}
             <div className="flex flex-col md:hidden">
-              {/* Content di atas */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={card1InView ? { opacity: 1, y: 0 } : {}}
@@ -56,7 +57,6 @@ export default function Sambutan() {
                 </div>
               </motion.div>
 
-              {/* Foto di bawah - nempel edge */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={card1InView ? { opacity: 1, y: 0 } : {}}
@@ -76,9 +76,8 @@ export default function Sambutan() {
 
             {/* Desktop Layout */}
             <div className="hidden md:flex md:flex-row items-end gap-0 p-0 pl-0">
-              {/* Left - Photo (Nempel ke bawah) */}
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={card1InView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative w-auto h-full flex-shrink-0 flex justify-start self-end"
@@ -93,9 +92,8 @@ export default function Sambutan() {
                 />
               </motion.div>
 
-              {/* Right - Content */}
               <motion.div
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={card1InView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="flex-1 flex flex-col justify-center space-y-6 text-left p-8 pb-12"
@@ -125,10 +123,10 @@ export default function Sambutan() {
             </div>
           </motion.div>
 
-          {/* Card 2 - Pemateri (Teal) - Slide from Right */}
+          {/* Card 2 - Pemateri (Teal) */}
           <motion.div
             ref={card2Ref}
-            initial={{ opacity: 0, x: 100 }}
+            initial={{ opacity: 0, x: 50 }}
             animate={card2InView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             whileHover={{ scale: 1.02 }}
@@ -136,7 +134,6 @@ export default function Sambutan() {
           >
             {/* Mobile Layout */}
             <div className="flex flex-col md:hidden">
-              {/* Content di atas */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={card2InView ? { opacity: 1, y: 0 } : {}}
@@ -168,7 +165,6 @@ export default function Sambutan() {
                 </div>
               </motion.div>
 
-              {/* Foto di bawah - nempel edge */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={card2InView ? { opacity: 1, y: 0 } : {}}
@@ -188,9 +184,8 @@ export default function Sambutan() {
 
             {/* Desktop Layout */}
             <div className="hidden md:flex md:flex-row-reverse items-end gap-0 p-0 pr-0">
-              {/* Right - Photo (Nempel ke bawah) */}
               <motion.div
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={card2InView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative w-auto h-full flex-shrink-0 flex justify-end self-end"
@@ -205,9 +200,8 @@ export default function Sambutan() {
                 />
               </motion.div>
 
-              {/* Left - Content */}
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={card2InView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="flex-1 flex flex-col justify-center space-y-6 text-left p-8 pb-12"

@@ -19,7 +19,7 @@ export default function RootLayout({
       <head>
         <link rel="shortcut icon" href="icon-saq-ws.png" type="image/x-icon" />
       </head>
-      <body>
+      <body className="overflow-x-hidden">
         <Navbar />
         {children}
         <Footer />

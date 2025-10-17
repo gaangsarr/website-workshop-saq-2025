@@ -76,13 +76,13 @@ export default function ChatBot() {
       {/* Chat Button - Fixed position */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 p-3 md:p-4 bg-biru hover:bg-blue-700 text-white rounded-full shadow-2xl transition-all ${
+        className={`fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 p-4 md:p-4 bg-biru hover:bg-blue-700 text-white rounded-full shadow-2xl transition-all ${
           isOpen ? "hidden" : "block"
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+        <MessageCircle className="w-7 h-7 md:w-6 md:h-6" />
       </motion.button>
 
       {/* Chat Window - Responsive size & position */}
