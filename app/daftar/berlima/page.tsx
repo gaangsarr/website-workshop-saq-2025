@@ -183,7 +183,7 @@ export default function DaftarBerlima() {
       };
 
       const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbzwep3HUYLlTi63zMfUSz3l008VSY210dPtxX_OHpoij7pl2_KvoGNSUeTv_edWWf5dtg/exec";
+        "https://script.google.com/macros/s/AKfycbzNtoIvIKYWDFTLw-lPkQzKa-IO6z83jygGkqCB3SWt2fXUsnvdJXoQJbXDuH3fnfZueQ/exec";
 
       await fetch(SCRIPT_URL, {
         method: "POST",
