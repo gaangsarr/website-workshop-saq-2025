@@ -31,12 +31,7 @@ function TiketCard({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
       whileHover={{ scale: 1.05, rotate: type === "pre-sale" ? 1 : 0 }}
-      className="relative rounded-[2rem] bg-biru overflow-hidden"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='32' ry='32' stroke='black' stroke-width='3' stroke-dasharray='15, 15' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%",
-      }}
+      className="relative rounded-[2rem] bg-biru overflow-hidden border-2"
     >
       {/* Badge Pre-Sale atau Normal */}
       <motion.div
@@ -120,9 +115,9 @@ export default function Tiket() {
           Pilihan Paket
         </motion.h2>
 
-        {/* Cards Grid - Stagger Animation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
-          {/* Pre-Sale Mandiri */}
+        {/* Cards Grid - 3 Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
+          {/* Paket Mandiri */}
           <TiketCard
             title="Paket Mandiri"
             originalPrice="55.000,00"
@@ -133,7 +128,7 @@ export default function Tiket() {
             index={0}
           />
 
-          {/* Pre-Sale Bertiga */}
+          {/* Paket Bertiga */}
           <TiketCard
             title="Paket Bertiga"
             originalPrice="135.000,00"
@@ -144,26 +139,15 @@ export default function Tiket() {
             index={1}
           />
 
-          {/* Normal Mandiri */}
+          {/* Paket Berlima - NEW */}
           <TiketCard
-            title="Paket Mandiri"
-            originalPrice="XX.000,00"
-            discountPrice="XX.000,00"
-            quota="Untuk 1 Orang Peserta"
-            type="normal"
-            route="/daftar/mandiri"
+            title="Paket Berlima"
+            originalPrice="225.000,00"
+            discountPrice="200.000,00"
+            quota="Untuk 5 Orang Peserta"
+            type="pre-sale"
+            route="/daftar/berlima"
             index={2}
-          />
-
-          {/* Normal Bertiga */}
-          <TiketCard
-            title="Paket Bertiga"
-            originalPrice="XXX.000,00"
-            discountPrice="XXX.000,00"
-            quota="Untuk 3 Orang Peserta"
-            type="normal"
-            route="/daftar/bertiga"
-            index={3}
           />
         </div>
       </div>

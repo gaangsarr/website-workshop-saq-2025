@@ -22,12 +22,7 @@ export default function Sambutan() {
             animate={card1InView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             whileHover={{ scale: 1.02 }}
-            className="relative rounded-[2.5rem] bg-biru overflow-hidden cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='40' ry='40' stroke='black' stroke-width='3' stroke-dasharray='15, 15' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "100% 100%",
-            }}
+            className="relative rounded-[2.5rem] bg-biru overflow-hidden border-2 border-black"
           >
             {/* Mobile Layout */}
             <div className="flex flex-col md:hidden">
@@ -69,7 +64,7 @@ export default function Sambutan() {
                 className="relative w-full flex justify-center"
               >
                 <Image
-                  src="/pak-dody-ws.png"
+                  src="/pak-dod-ws-25-revisi.png"
                   width={352}
                   height={448}
                   alt="Dody, S.Kom., M.Kom."
@@ -89,7 +84,7 @@ export default function Sambutan() {
                 className="relative w-auto h-full flex-shrink-0 flex justify-start self-end"
               >
                 <Image
-                  src="/pak-dod-ws-25.png"
+                  src="/pak-dod-ws-25-revisi.png"
                   width={352}
                   height={448}
                   alt="Dody, S.Kom., M.Kom."
@@ -137,12 +132,7 @@ export default function Sambutan() {
             animate={card2InView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
             whileHover={{ scale: 1.02 }}
-            className="relative rounded-[2.5rem] bg-teal overflow-hidden cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='40' ry='40' stroke='black' stroke-width='3' stroke-dasharray='15, 15' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "100% 100%",
-            }}
+            className="relative rounded-[2.5rem] bg-teal overflow-hidden border-2 border-black"
           >
             {/* Mobile Layout */}
             <div className="flex flex-col md:hidden">
@@ -159,19 +149,21 @@ export default function Sambutan() {
 
                 <div className="text-white text-sm text-justify leading-relaxed">
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris.
+                    "Freelancer zaman dulu kerja sendirian. Freelancer zaman
+                    sekarang kerja bareng AI." Kalau kamu anak tech dan pengen
+                    mulai cari cuan, kamu nggak perlu nunggu lulus dulu. Tapi
+                    jangan juga mulai dengan cara lama. Belajar automation pakai
+                    n8n, dan jadi freelancer generasi baru yang kerja sekali,
+                    hasilnya jalan otomatis berkali-kali.
                   </p>
                 </div>
 
                 <div className="space-y-0.5 pt-2">
                   <p className="font-heading font-bold text-white text-base">
-                    Nama Pemateri
+                    Cendekia Luthfieta Nazalia
                   </p>
                   <p className="font-body text-white text-sm">
-                    Jabatan/Posisi Pemateri
+                    Technician Perencanaan SCADA
                   </p>
                 </div>
               </motion.div>
@@ -226,19 +218,21 @@ export default function Sambutan() {
 
                 <div className="text-white text-base lg:text-lg text-justify leading-relaxed">
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris.
+                    "Freelancer zaman dulu kerja sendirian. Freelancer zaman
+                    sekarang kerja bareng AI." Kalau kamu anak tech dan pengen
+                    mulai cari cuan, kamu nggak perlu nunggu lulus dulu. Tapi
+                    jangan juga mulai dengan cara lama. Belajar automation pakai
+                    n8n, dan jadi freelancer generasi baru yang kerja sekali,
+                    hasilnya jalan otomatis berkali-kali.
                   </p>
                 </div>
 
                 <div className="space-y-1 pt-2">
                   <p className="font-heading font-bold text-white text-lg lg:text-xl">
-                    Nama Pemateri
+                    Cendekia Luthfieta Nazalia
                   </p>
                   <p className="font-body text-white text-sm lg:text-base">
-                    Jabatan/Posisi Pemateri
+                    Technician Perencanaan SCADA
                   </p>
                 </div>
               </motion.div>

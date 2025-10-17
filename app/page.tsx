@@ -6,6 +6,7 @@ import Tiket from "@/components/Tiket";
 import FAQ from "@/components/FAQ";
 import SpecialThanks from "@/components/SpecialThanks";
 import ScrollingText1 from "@/components/ScrollingText-KURSITERBATAS";
+import GamePromo from "@/components/GamePromo";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <ScrollingText />
       <Tiket />
       <ScrollingText1 />
+      <GamePromo />
       <FAQ />
       <SpecialThanks />
     </main>

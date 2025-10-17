@@ -4,11 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -35,13 +37,15 @@ export default function Navbar() {
     };
   }, []);
 
-  // Detect active section with Intersection Observer
+  // Detect active section with Intersection Observer (only on homepage)
   useEffect(() => {
+    if (pathname !== "/") return;
+
     const sections = document.querySelectorAll("section[id]");
 
     const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -70% 0px", // Trigger saat section 20% dari atas viewport
+      rootMargin: "-20% 0px -70% 0px",
       threshold: 0,
     };
 
@@ -67,7 +71,7 @@ export default function Navbar() {
         observer.unobserve(section);
       });
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <nav
@@ -120,9 +124,10 @@ export default function Navbar() {
           {/* Desktop Navigation Menu */}
           <div className="hidden md:flex items-center gap-12">
             <Link
-              href="/"
+              href="/#hero"
               className={`font-heading text-lg hover:text-biru transition-colors ${
-                activeSection === "home" || activeSection === "hero"
+                pathname === "/" &&
+                (activeSection === "home" || activeSection === "hero")
                   ? "font-bold text-biru"
                   : ""
               }`}
@@ -130,17 +135,29 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="#register"
+              href="/#register"
               className={`font-heading text-lg hover:text-kuning transition-colors ${
-                activeSection === "register" ? "font-bold text-kuning" : ""
+                pathname === "/" && activeSection === "register"
+                  ? "font-bold text-kuning"
+                  : ""
               }`}
             >
               Register
             </Link>
             <Link
-              href="#faq"
+              href="/game"
+              className={`font-heading text-lg hover:text-teal transition-colors ${
+                pathname === "/game" ? "font-bold text-teal" : ""
+              }`}
+            >
+              Game
+            </Link>
+            <Link
+              href="/#faq"
               className={`font-heading text-lg hover:text-pink transition-colors ${
-                activeSection === "faq" ? "font-bold text-pink" : ""
+                pathname === "/" && activeSection === "faq"
+                  ? "font-bold text-pink"
+                  : ""
               }`}
             >
               FAQ
@@ -180,12 +197,13 @@ export default function Navbar() {
             isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="py-4 space-y-2 bg-white/90 backdrop-blur-md rounded-lg mb-4 shadow-lg">
+          <div className="py-4 space-y-2 bg-white rounded-lg mb-4 shadow-lg">
             <Link
-              href="/"
+              href="/#hero"
               onClick={closeMenu}
               className={`block font-heading text-lg px-6 py-3 hover:bg-biru hover:text-white transition-all rounded-lg mx-2 ${
-                activeSection === "home" || activeSection === "hero"
+                pathname === "/" &&
+                (activeSection === "home" || activeSection === "hero")
                   ? "font-bold bg-biru text-white"
                   : ""
               }`}
@@ -193,10 +211,10 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="#register"
+              href="/#register"
               onClick={closeMenu}
               className={`block font-heading text-lg px-6 py-3 hover:bg-pink hover:text-white transition-all rounded-lg mx-2 ${
-                activeSection === "register"
+                pathname === "/" && activeSection === "register"
                   ? "font-bold bg-pink text-white"
                   : ""
               }`}
@@ -204,10 +222,21 @@ export default function Navbar() {
               Register
             </Link>
             <Link
-              href="#faq"
+              href="/game"
+              onClick={closeMenu}
+              className={`block font-heading text-lg px-6 py-3 hover:bg-teal hover:text-white transition-all rounded-lg mx-2 ${
+                pathname === "/game" ? "font-bold bg-teal text-white" : ""
+              }`}
+            >
+              Game
+            </Link>
+            <Link
+              href="/#faq"
               onClick={closeMenu}
               className={`block font-heading text-lg px-6 py-3 hover:bg-kuning hover:text-white transition-all rounded-lg mx-2 ${
-                activeSection === "faq" ? "font-bold bg-kuning text-white" : ""
+                pathname === "/" && activeSection === "faq"
+                  ? "font-bold bg-kuning text-white"
+                  : ""
               }`}
             >
               FAQ

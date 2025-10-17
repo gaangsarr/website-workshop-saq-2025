@@ -8,7 +8,7 @@ import { useRef } from "react";
 interface PartnerCard {
   name: string;
   logo: string;
-  description: string;
+  url: string;
 }
 
 export default function SpecialThanks() {
@@ -19,23 +19,28 @@ export default function SpecialThanks() {
     {
       name: "Institut Teknologi PLN",
       logo: "/ITPLN.png",
-      description: "Kampus",
+      url: "https://itpln.ac.id",
     },
     {
       name: "Fakultas Telematika Energi",
       logo: "/FTEN.png",
-      description: "Fakultas",
+      url: "https://ften.itpln.ac.id/",
     },
     {
       name: "Asisten Laboratorium Komputer",
       logo: "/ASLABKOM.png",
-      description: "Aslabkom",
+      url: "https://www.instagram.com/aslabkom_itpln",
+    },
+    {
+      name: "Laboratorium Software Architecture & Quality",
+      logo: "/SAQ.png",
+      url: "https://www.instagram.com/saqlab.itpln",
     },
   ];
 
   return (
     <section ref={ref} className="relative py-16 md:py-24 bg-white">
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title - Fade in */}
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
@@ -46,11 +51,14 @@ export default function SpecialThanks() {
           Special Thanks
         </motion.h2>
 
-        {/* Cards Grid - Stagger Animation */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {/* Cards Grid - 4 Columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {partners.map((partner, index) => (
-            <motion.div
+            <motion.a
               key={index}
+              href={partner.url}
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{
@@ -59,35 +67,26 @@ export default function SpecialThanks() {
                 ease: "easeOut",
               }}
               whileHover={{ scale: 1.05 }}
-              className="relative bg-white rounded-[2rem] p-8 flex flex-col items-center justify-center space-y-6 transition-transform duration-300"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='32' ry='32' stroke='black' stroke-width='3' stroke-dasharray='15, 15' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100% 100%",
-                minHeight: "280px",
-              }}
+              className="relative bg-white rounded-[2rem] p-6 flex flex-col items-center transition-transform duration-300 cursor-pointer"
             >
-              {/* Logo */}
-              <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
-                <Image
-                  src={partner.logo}
-                  width={160}
-                  height={160}
-                  alt={partner.name}
-                  className="w-full h-full object-contain"
-                />
+              {/* Logo Container - Fixed Height */}
+              <div className="flex items-center justify-center h-32 md:h-40 mb-4">
+                <div className="relative w-24 h-24 md:w-32 md:h-32">
+                  <Image
+                    src={partner.logo}
+                    width={128}
+                    height={128}
+                    alt={partner.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
               </div>
 
-              {/* Name */}
-              <div className="text-center space-y-2">
-                <h3 className="font-heading font-bold text-lg md:text-xl text-biru">
-                  {partner.name}
-                </h3>
-                <p className="text-sm md:text-base text-gray-600">
-                  {partner.description}
-                </p>
-              </div>
-            </motion.div>
+              {/* Name - Always Same Position */}
+              <h3 className="font-heading font-bold text-sm md:text-base text-center text-biru leading-tight">
+                {partner.name}
+              </h3>
+            </motion.a>
           ))}
         </div>
       </div>

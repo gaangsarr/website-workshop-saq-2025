@@ -25,14 +25,8 @@ function FAQAccordion({ item, index }: { item: FAQItem; index: number }) {
       {/* Question Button with Border */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.02, x: 5 }}
         whileTap={{ scale: 0.98 }}
-        className="relative w-full bg-biru text-white rounded-2xl px-6 py-4 flex items-center justify-between hover:bg-biru/90 transition-all overflow-hidden"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='black' stroke-width='2' stroke-dasharray='10, 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "100% 100%",
-        }}
+        className="relative w-full bg-biru hover:bg-[#235ec3] text-white rounded-2xl px-6 py-4 flex items-center justify-between transition-all overflow-hidden border-2 border-black"
       >
         <span className="font-heading text-base md:text-lg text-left pr-4">
           {item.question}
@@ -62,12 +56,7 @@ function FAQAccordion({ item, index }: { item: FAQItem; index: number }) {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: isOpen ? 1 : 0, y: isOpen ? 0 : -10 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="relative bg-biru text-white rounded-2xl px-6 py-6 text-justify leading-relaxed text-sm md:text-base overflow-hidden"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='black' stroke-width='2' stroke-dasharray='10, 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "100% 100%",
-          }}
+          className="relative bg-[#235ec3] text-white rounded-2xl px-6 py-6 text-justify leading-relaxed text-sm md:text-base overflow-hidden border-2 border-black"
         >
           {item.answer}
         </motion.div>
