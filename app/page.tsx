@@ -7,11 +7,13 @@ import FAQ from "@/components/FAQ";
 import SpecialThanks from "@/components/SpecialThanks";
 import ScrollingText1 from "@/components/ScrollingText-KURSITERBATAS";
 import GamePromo from "@/components/GamePromo";
+import ChatBot from "@/components/ChatBot";
 
 export default function Home() {
   return (
     <main>
       <Hero />
+      <ChatBot />
       <MengulikWS />
       <Sambutan />
       <ScrollingText />

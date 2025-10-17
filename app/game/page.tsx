@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -9,13 +9,12 @@ import {
   Zap,
   RefreshCw,
   Plug,
-  Palette,
   Play,
-  RotateCcw,
   Trophy,
   BookOpen,
   Home,
-  HomeIcon,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 type GameState = "menu" | "learn" | "quiz" | "result";
@@ -43,6 +42,42 @@ export default function GamePage() {
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Setup audio
+  useEffect(() => {
+    audioRef.current = new Audio("/game-music.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 1;
+
+    // Auto play when component mounts
+    const playAudio = () => {
+      audioRef.current?.play().catch((error) => {
+        console.log("Audio autoplay prevented:", error);
+      });
+    };
+
+    playAudio();
+
+    // Cleanup
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  // Handle mute/unmute
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   const flashcardsData: FlashcardData[] = [
     {
@@ -183,10 +218,34 @@ export default function GamePage() {
     }
   };
 
+  // Music Toggle Button Component
+  const MusicButton = () => (
+    <motion.button
+      transition={{ delay: 0.5 }}
+      onClick={toggleMute}
+      className="fixed top-25 right-6 z-50 p-4 bg-white hover:bg-gray-50 rounded-2xl shadow-lg transition-all group"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {isMuted ? (
+        <VolumeX className="w-6 h-6 text-gray-600" />
+      ) : (
+        <Volume2 className="w-6 h-6 text-biru" />
+      )}
+
+      {/* Tooltip */}
+      <div className="absolute top-full right-0 mt-2 px-3 py-1 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+        {isMuted ? "Unmute Music" : "Mute Music"}
+      </div>
+    </motion.button>
+  );
+
   // Menu Screen
   if (gameState === "menu") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <MusicButton />
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -225,6 +284,8 @@ export default function GamePage() {
     const card = flashcardsData[currentCard];
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <MusicButton />
+
         <div className="max-w-2xl w-full space-y-6">
           {/* Progress */}
           <div className="text-center">
@@ -332,6 +393,8 @@ export default function GamePage() {
     const question = quizQuestions[currentQuestion];
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <MusicButton />
+
         <motion.div
           key={currentQuestion}
           initial={{ opacity: 0, y: 20 }}
@@ -383,6 +446,8 @@ export default function GamePage() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
+        <MusicButton />
+
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Score Summary Card */}
           <motion.div
