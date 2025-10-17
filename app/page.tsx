@@ -12,8 +12,8 @@ import ChatBot from "@/components/ChatBot";
 export default function Home() {
   return (
     <main>
-      <Hero />
       <ChatBot />
+      <Hero />
       <MengulikWS />
       <Sambutan />
       <ScrollingText />
