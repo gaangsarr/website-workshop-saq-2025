@@ -143,7 +143,7 @@ export default function Tiket() {
           <TiketCard
             title="Paket Berlima"
             originalPrice="225.000,00"
-            discountPrice="200.000,00"
+            discountPrice="210.000,00"
             quota="Untuk 5 Orang Peserta"
             type="pre-sale"
             route="/daftar/berlima"
