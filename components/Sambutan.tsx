@@ -273,7 +273,7 @@ export default function Sambutan() {
                     Cendekia Luthfieta Nazalia
                   </p>
                   <p className="font-body text-white text-sm lg:text-base">
-                    Technician Perencanaan SCADA
+                    Technician Perencanaan SCADA - PLN Icon Plus
                   </p>
 
                   {/* Social Media Links - Desktop */}
@@ -291,7 +291,7 @@ export default function Sambutan() {
                       href="https://www.youtube.com/@luthfieta"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all"
+                      className="p-2.5 bg-white/20 hover:bg-white/30 rounded-full transition-all hover:scale-110"
                       aria-label="Instagram"
                     >
                       <Youtube className="w-5 h-5 text-white" />
