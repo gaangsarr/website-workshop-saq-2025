@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzNtoIvIKYWDFTLw-lPkQzKa-IO6z83jygGkqCB3SWt2fXUsnvdJXoQJbXDuH3fnfZueQ/exec";
+  "https://script.google.com/macros/s/AKfycbzdheJau3-_7ouGKZfMWOJN-49GWt4AASULwHlJ-DjiFOWgAB3xscFFnuezXolUVP4RIA/exec";
 
 export default function DaftarMandiriPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();

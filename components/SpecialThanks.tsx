@@ -48,7 +48,7 @@ export default function SpecialThanks() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-kuning text-stroke-mobile text-stroke-desktop mb-12 md:mb-16"
         >
-          Special Thanks
+          Supported by
         </motion.h2>
 
         {/* Cards Grid - 4 Columns */}

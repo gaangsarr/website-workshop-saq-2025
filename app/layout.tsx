@@ -7,7 +7,8 @@ import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Workshop SAQ 2025",
-  description: "Build Your First AI Agent - Workshop SAQ 2025",
+  description:
+    "Workshop n8n untuk Mahasiswa & Umum. Belajar bikin AI Agent, dapat Sertifikat + Konsumsi. Kuota Terbatas 125 Orang!",
 };
 
 export default function RootLayout({
