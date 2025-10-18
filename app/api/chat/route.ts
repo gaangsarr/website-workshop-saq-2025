@@ -36,10 +36,13 @@ Informasi Workshop:
   • Paket Mandiri (1 orang): Rp 45.000
   • Paket Bertiga (3 orang): Rp 120.000
   • Paket Berlima (5 orang): Rp 200.000
+
 - Harga Normal:
   • Paket Mandiri (1 orang): Rp 45.000
   • Paket Bertiga (3 orang): Rp 120.000
   • Paket Berlima (5 orang): Rp 200.000
+
+
 - Materi: n8n, AI Agent, Automation, Workflow, API Integration
 - Target: Mahasiswa, Pelajar, dan Umum
 - Cara Daftar: Klik tombol "Daftar" di website

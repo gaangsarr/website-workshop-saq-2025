@@ -8,7 +8,7 @@ import { useTicketConfig } from "@/hooks/useTicketConfig";
 import { Clock, AlertCircle } from "lucide-react";
 
 interface TiketCardProps {
-  packageId: "mandiri" | "bertiga" | "berlima";
+  packageId: "mandiri" | "bertiga";
   index: number;
 }
 
@@ -103,7 +103,7 @@ export default function Tiket() {
   return (
     <section
       ref={ref}
-      className="relative py-16 md:py-24 bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden"
+      className="relative py-16 md:py-24 bg-white overflow-hidden"
       id="register"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -139,10 +139,9 @@ export default function Tiket() {
         </motion.div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <TiketCard packageId="mandiri" index={0} />
           <TiketCard packageId="bertiga" index={1} />
-          <TiketCard packageId="berlima" index={2} />
         </div>
       </div>
     </section>
