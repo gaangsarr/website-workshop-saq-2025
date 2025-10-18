@@ -1,116 +1,93 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { Upload, ArrowLeft, Loader2, CheckCircle } from "lucide-react";
+import { ArrowLeft, Upload, Loader2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { useTicketConfig } from "@/hooks/useTicketConfig";
 
-interface ParticipantData {
-  namaLengkap: string;
-  asalInstansi: string;
-  jurusan: string;
-  nim: string;
-  nomorWA: string;
-  email: string;
-  status: string;
-}
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzNtoIvIKYWDFTLw-lPkQzKa-IO6z83jygGkqCB3SWt2fXUsnvdJXoQJbXDuH3fnfZueQ/exec";
 
-export default function DaftarBerlima() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+export default function DaftarBerlimaPage() {
+  const { getActivePackage, formatPrice } = useTicketConfig();
+  const packageData = getActivePackage("berlima");
+
   const [formData, setFormData] = useState({
     pemesanWA: "",
     pemesanEmail: "",
-    buktiPembayaran: null as File | null,
-    peserta1: {
-      namaLengkap: "",
-      asalInstansi: "",
-      jurusan: "",
-      nim: "",
-      nomorWA: "",
-      email: "",
-      status: "Mahasiswa",
-    } as ParticipantData,
-    peserta2: {
-      namaLengkap: "",
-      asalInstansi: "",
-      jurusan: "",
-      nim: "",
-      nomorWA: "",
-      email: "",
-      status: "Mahasiswa",
-    } as ParticipantData,
-    peserta3: {
-      namaLengkap: "",
-      asalInstansi: "",
-      jurusan: "",
-      nim: "",
-      nomorWA: "",
-      email: "",
-      status: "Mahasiswa",
-    } as ParticipantData,
-    peserta4: {
-      namaLengkap: "",
-      asalInstansi: "",
-      jurusan: "",
-      nim: "",
-      nomorWA: "",
-      email: "",
-      status: "Mahasiswa",
-    } as ParticipantData,
-    peserta5: {
-      namaLengkap: "",
-      asalInstansi: "",
-      jurusan: "",
-      nim: "",
-      nomorWA: "",
-      email: "",
-      status: "Mahasiswa",
-    } as ParticipantData,
+    // Peserta 1
+    peserta1_namaLengkap: "",
+    peserta1_asalInstansi: "",
+    peserta1_status: "Mahasiswa",
+    peserta1_jurusan: "",
+    peserta1_nim: "",
+    peserta1_nomorWA: "",
+    peserta1_email: "",
+    // Peserta 2
+    peserta2_namaLengkap: "",
+    peserta2_asalInstansi: "",
+    peserta2_status: "Mahasiswa",
+    peserta2_jurusan: "",
+    peserta2_nim: "",
+    peserta2_nomorWA: "",
+    peserta2_email: "",
+    // Peserta 3
+    peserta3_namaLengkap: "",
+    peserta3_asalInstansi: "",
+    peserta3_status: "Mahasiswa",
+    peserta3_jurusan: "",
+    peserta3_nim: "",
+    peserta3_nomorWA: "",
+    peserta3_email: "",
+    // Peserta 4
+    peserta4_namaLengkap: "",
+    peserta4_asalInstansi: "",
+    peserta4_status: "Mahasiswa",
+    peserta4_jurusan: "",
+    peserta4_nim: "",
+    peserta4_nomorWA: "",
+    peserta4_email: "",
+    // Peserta 5
+    peserta5_namaLengkap: "",
+    peserta5_asalInstansi: "",
+    peserta5_status: "Mahasiswa",
+    peserta5_jurusan: "",
+    peserta5_nim: "",
+    peserta5_nomorWA: "",
+    peserta5_email: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleParticipantChange = (
-    participantNum: number,
-    field: keyof ParticipantData,
-    value: string
+  if (!packageData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600">Pendaftaran tidak tersedia saat ini.</p>
+          <Link
+            href="/daftar"
+            className="text-biru hover:underline mt-4 inline-block"
+          >
+            Kembali ke pilihan paket
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    if (participantNum === 1) {
-      setFormData((prev) => ({
-        ...prev,
-        peserta1: { ...prev.peserta1, [field]: value },
-      }));
-    } else if (participantNum === 2) {
-      setFormData((prev) => ({
-        ...prev,
-        peserta2: { ...prev.peserta2, [field]: value },
-      }));
-    } else if (participantNum === 3) {
-      setFormData((prev) => ({
-        ...prev,
-        peserta3: { ...prev.peserta3, [field]: value },
-      }));
-    } else if (participantNum === 4) {
-      setFormData((prev) => ({
-        ...prev,
-        peserta4: { ...prev.peserta4, [field]: value },
-      }));
-    } else if (participantNum === 5) {
-      setFormData((prev) => ({
-        ...prev,
-        peserta5: { ...prev.peserta5, [field]: value },
-      }));
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({ ...prev, buktiPembayaran: e.target.files![0] }));
+      setBuktiPembayaran(e.target.files[0]);
     }
   };
 
@@ -124,7 +101,7 @@ export default function DaftarBerlima() {
       let fileName = "";
       let fileType = "";
 
-      if (formData.buktiPembayaran) {
+      if (buktiPembayaran) {
         const reader = new FileReader();
         fileBase64 = await new Promise<string>((resolve, reject) => {
           reader.onload = () => {
@@ -132,58 +109,62 @@ export default function DaftarBerlima() {
             resolve(result.split(",")[1]);
           };
           reader.onerror = reject;
-          reader.readAsDataURL(formData.buktiPembayaran!);
+          reader.readAsDataURL(buktiPembayaran);
         });
-        fileName = formData.buktiPembayaran.name;
-        fileType = formData.buktiPembayaran.type;
+        fileName = buktiPembayaran.name;
+        fileType = buktiPembayaran.type;
       }
 
+      // Build payload for 5 participants
       const payload = {
         jumlahPeserta: "5",
         pemesanWA: formData.pemesanWA,
         pemesanEmail: formData.pemesanEmail,
-        peserta1_namaLengkap: formData.peserta1.namaLengkap,
-        peserta1_asalInstansi: formData.peserta1.asalInstansi,
-        peserta1_status: formData.peserta1.status,
-        peserta1_jurusan: formData.peserta1.jurusan || "-",
-        peserta1_nim: formData.peserta1.nim || "-",
-        peserta1_nomorWA: formData.peserta1.nomorWA,
-        peserta1_email: formData.peserta1.email,
-        peserta2_namaLengkap: formData.peserta2.namaLengkap,
-        peserta2_asalInstansi: formData.peserta2.asalInstansi,
-        peserta2_status: formData.peserta2.status,
-        peserta2_jurusan: formData.peserta2.jurusan || "-",
-        peserta2_nim: formData.peserta2.nim || "-",
-        peserta2_nomorWA: formData.peserta2.nomorWA,
-        peserta2_email: formData.peserta2.email,
-        peserta3_namaLengkap: formData.peserta3.namaLengkap,
-        peserta3_asalInstansi: formData.peserta3.asalInstansi,
-        peserta3_status: formData.peserta3.status,
-        peserta3_jurusan: formData.peserta3.jurusan || "-",
-        peserta3_nim: formData.peserta3.nim || "-",
-        peserta3_nomorWA: formData.peserta3.nomorWA,
-        peserta3_email: formData.peserta3.email,
-        peserta4_namaLengkap: formData.peserta4.namaLengkap,
-        peserta4_asalInstansi: formData.peserta4.asalInstansi,
-        peserta4_status: formData.peserta4.status,
-        peserta4_jurusan: formData.peserta4.jurusan || "-",
-        peserta4_nim: formData.peserta4.nim || "-",
-        peserta4_nomorWA: formData.peserta4.nomorWA,
-        peserta4_email: formData.peserta4.email,
-        peserta5_namaLengkap: formData.peserta5.namaLengkap,
-        peserta5_asalInstansi: formData.peserta5.asalInstansi,
-        peserta5_status: formData.peserta5.status,
-        peserta5_jurusan: formData.peserta5.jurusan || "-",
-        peserta5_nim: formData.peserta5.nim || "-",
-        peserta5_nomorWA: formData.peserta5.nomorWA,
-        peserta5_email: formData.peserta5.email,
+        // Peserta 1
+        peserta1_namaLengkap: formData.peserta1_namaLengkap,
+        peserta1_asalInstansi: formData.peserta1_asalInstansi,
+        peserta1_status: formData.peserta1_status,
+        peserta1_jurusan: formData.peserta1_jurusan || "-",
+        peserta1_nim: formData.peserta1_nim || "-",
+        peserta1_nomorWA: formData.peserta1_nomorWA,
+        peserta1_email: formData.peserta1_email,
+        // Peserta 2
+        peserta2_namaLengkap: formData.peserta2_namaLengkap,
+        peserta2_asalInstansi: formData.peserta2_asalInstansi,
+        peserta2_status: formData.peserta2_status,
+        peserta2_jurusan: formData.peserta2_jurusan || "-",
+        peserta2_nim: formData.peserta2_nim || "-",
+        peserta2_nomorWA: formData.peserta2_nomorWA,
+        peserta2_email: formData.peserta2_email,
+        // Peserta 3
+        peserta3_namaLengkap: formData.peserta3_namaLengkap,
+        peserta3_asalInstansi: formData.peserta3_asalInstansi,
+        peserta3_status: formData.peserta3_status,
+        peserta3_jurusan: formData.peserta3_jurusan || "-",
+        peserta3_nim: formData.peserta3_nim || "-",
+        peserta3_nomorWA: formData.peserta3_nomorWA,
+        peserta3_email: formData.peserta3_email,
+        // Peserta 4
+        peserta4_namaLengkap: formData.peserta4_namaLengkap,
+        peserta4_asalInstansi: formData.peserta4_asalInstansi,
+        peserta4_status: formData.peserta4_status,
+        peserta4_jurusan: formData.peserta4_jurusan || "-",
+        peserta4_nim: formData.peserta4_nim || "-",
+        peserta4_nomorWA: formData.peserta4_nomorWA,
+        peserta4_email: formData.peserta4_email,
+        // Peserta 5
+        peserta5_namaLengkap: formData.peserta5_namaLengkap,
+        peserta5_asalInstansi: formData.peserta5_asalInstansi,
+        peserta5_status: formData.peserta5_status,
+        peserta5_jurusan: formData.peserta5_jurusan || "-",
+        peserta5_nim: formData.peserta5_nim || "-",
+        peserta5_nomorWA: formData.peserta5_nomorWA,
+        peserta5_email: formData.peserta5_email,
+        // File
         buktiPembayaranBase64: fileBase64,
         buktiPembayaranName: fileName,
         buktiPembayaranType: fileType,
       };
-
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbzNtoIvIKYWDFTLw-lPkQzKa-IO6z83jygGkqCB3SWt2fXUsnvdJXoQJbXDuH3fnfZueQ/exec";
 
       await fetch(SCRIPT_URL, {
         method: "POST",
@@ -194,8 +175,9 @@ export default function DaftarBerlima() {
         body: JSON.stringify(payload),
       });
 
+      // Wait for processing
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsSuccess(true);
+      setSubmitSuccess(true);
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan. Silakan coba lagi.");
@@ -204,26 +186,38 @@ export default function DaftarBerlima() {
     }
   };
 
-  if (isSuccess) {
+  if (submitSuccess) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full text-center space-y-6"
+          className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-xl text-center"
         >
-          <div className="inline-block p-4 bg-green-100 rounded-full">
-            <CheckCircle className="w-16 h-16 text-green-600" />
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg
+              className="w-10 h-10 text-green-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
           </div>
-          <h2 className="font-heading font-bold text-3xl text-gray-800">
-            Pendaftaran Berhasil!
+          <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+            Pendaftaran Berhasil! 🎉
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-6">
             Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
             WhatsApp untuk konfirmasi selanjutnya.
           </p>
           <Link href="/">
-            <button className="bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-8 rounded-xl transition-all">
+            <button className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all">
               Kembali ke Home
             </button>
           </Link>
@@ -232,277 +226,287 @@ export default function DaftarBerlima() {
     );
   }
 
-  const renderParticipantForm = (num: number) => {
-    const participant = formData[
-      `peserta${num}` as keyof typeof formData
-    ] as ParticipantData;
+  const renderPesertaFields = (pesertaNum: number) => {
+    const prefix = `peserta${pesertaNum}`;
+    const status = formData[`${prefix}_status` as keyof typeof formData];
 
     return (
-      <div
-        key={num}
-        className="bg-white rounded-2xl p-6 md:p-8 border-2 border-black"
-      >
-        <h2 className="font-heading font-bold text-xl mb-6">
-          Data Peserta {num}
-        </h2>
+      <div key={pesertaNum} className="bg-gray-50 rounded-2xl p-6 space-y-4">
+        <h4 className="font-heading font-bold text-lg text-gray-800 mb-4">
+          Peserta {pesertaNum}
+        </h4>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Nama Lengkap <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={participant.namaLengkap}
-              onChange={(e) =>
-                handleParticipantChange(num, "namaLengkap", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder="Masukkan nama lengkap"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Nama Lengkap *
+          </label>
+          <input
+            type="text"
+            name={`${prefix}_namaLengkap`}
+            value={formData[`${prefix}_namaLengkap` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Asal Instansi <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={participant.asalInstansi}
-              onChange={(e) =>
-                handleParticipantChange(num, "asalInstansi", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder="Contoh: Institut Teknologi PLN"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Asal Instansi *
+          </label>
+          <input
+            type="text"
+            name={`${prefix}_asalInstansi`}
+            value={formData[`${prefix}_asalInstansi` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={participant.status}
-              onChange={(e) =>
-                handleParticipantChange(num, "status", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-            >
-              <option value="Mahasiswa">Mahasiswa</option>
-              <option value="Pelajar">Pelajar</option>
-              <option value="Umum">Umum</option>
-            </select>
-          </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Status *
+          </label>
+          <select
+            name={`${prefix}_status`}
+            value={status as string}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+          >
+            <option value="Mahasiswa">Mahasiswa</option>
+            <option value="Pelajar">Pelajar</option>
+            <option value="Umum">Umum</option>
+          </select>
+        </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Jurusan
-            </label>
-            <input
-              type="text"
-              value={participant.jurusan}
-              onChange={(e) =>
-                handleParticipantChange(num, "jurusan", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder='Isi "-" jika Pelajar/Umum'
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Isi &quot;-&quot; apabila Pelajar/Umum
-            </p>
-          </div>
+        {status === "Mahasiswa" && (
+          <>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Jurusan *
+              </label>
+              <input
+                type="text"
+                name={`${prefix}_jurusan`}
+                value={formData[`${prefix}_jurusan` as keyof typeof formData]}
+                onChange={handleInputChange}
+                required
+                placeholder='Isi "-" apabila Pelajar/Umum'
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                NIM *
+              </label>
+              <input
+                type="text"
+                name={`${prefix}_nim`}
+                value={formData[`${prefix}_nim` as keyof typeof formData]}
+                onChange={handleInputChange}
+                required
+                placeholder='Isi "-" apabila Pelajar/Umum'
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+              />
+            </div>
+          </>
+        )}
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              NIM
-            </label>
-            <input
-              type="text"
-              value={participant.nim}
-              onChange={(e) =>
-                handleParticipantChange(num, "nim", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder='Isi "-" jika Pelajar/Umum'
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Isi &quot;-&quot; apabila Pelajar/Umum
-            </p>
-          </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Nomor WhatsApp *
+          </label>
+          <input
+            type="tel"
+            name={`${prefix}_nomorWA`}
+            value={formData[`${prefix}_nomorWA` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            placeholder="08xxxxxxxxxx"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Nomor WhatsApp <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="tel"
-              required
-              value={participant.nomorWA}
-              onChange={(e) =>
-                handleParticipantChange(num, "nomorWA", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder="08xxxxxxxxxx"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Email Aktif <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              required
-              value={participant.email}
-              onChange={(e) =>
-                handleParticipantChange(num, "email", e.target.value)
-              }
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-              placeholder="email@example.com"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Email *
+          </label>
+          <input
+            type="email"
+            name={`${prefix}_email`}
+            value={formData[`${prefix}_email` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+          />
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-white py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-biru mb-4"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Kembali
-          </Link>
-          <h1 className="font-heading font-bold text-3xl md:text-4xl text-biru mb-2">
-            Pendaftaran Paket Berlima
-          </h1>
-          <p className="text-gray-600">Untuk 5 orang peserta • Rp 210.000</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        <Link
+          href="/daftar"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-biru mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Kembali
+        </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
-            <div className="sticky top-8 space-y-6">
-              <div className="bg-kuning rounded-2xl p-6 text-white border-2 border-black">
-                <p className="text-sm opacity-90 mb-2">Total Pembayaran</p>
-                <p className="font-heading font-bold text-3xl">Rp 210.000</p>
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <p className="text-xs opacity-75">Paket Berlima</p>
-                  <p className="text-sm">5 Orang Peserta</p>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 border-2 border-black">
-                <h3 className="font-heading font-bold text-lg mb-4">
-                  Scan QRIS untuk Bayar
-                </h3>
-                <div className="bg-gray-100 rounded-xl p-4 mb-4">
-                  <Image
-                    src="/qris.png"
-                    width={300}
-                    height={300}
-                    alt="QRIS Payment"
-                    className="w-full h-auto"
-                  />
-                </div>
-                <p className="text-sm text-gray-600 text-center">
-                  Scan kode QR di atas dengan aplikasi pembayaran kamu
-                </p>
-              </div>
-            </div>
-          </div>
-
+          {/* Form - Left Side (2 columns) */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Data Pemesan */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 border-2 border-black">
-                <h2 className="font-heading font-bold text-xl mb-6">
-                  Data Pemesan
-                </h2>
-                <div className="space-y-4">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white rounded-3xl p-6 md:p-8 border-2 border-black shadow-xl"
+            >
+              <h1 className="font-heading font-bold text-3xl text-kuning mb-2">
+                Formulir Pendaftaran
+              </h1>
+              <p className="text-gray-600 mb-6">{packageData.name}</p>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Data Pemesan */}
+                <div className="bg-kuning/10 rounded-2xl p-6 space-y-4">
+                  <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
+                    Data Pemesan
+                  </h3>
+
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Nomor WhatsApp <span className="text-red-500">*</span>
+                      Nomor WhatsApp Pemesan *
                     </label>
                     <input
                       type="tel"
                       name="pemesanWA"
-                      required
                       value={formData.pemesanWA}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                      onChange={handleInputChange}
+                      required
                       placeholder="08xxxxxxxxxx"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
                     />
                   </div>
+
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Email <span className="text-red-500">*</span>
+                      Email Pemesan *
                     </label>
                     <input
                       type="email"
                       name="pemesanEmail"
-                      required
                       value={formData.pemesanEmail}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
-                      placeholder="email@example.com"
                     />
+                  </div>
+                </div>
+
+                {/* Data Peserta */}
+                <div className="space-y-4">
+                  <h3 className="font-heading font-bold text-xl text-gray-800">
+                    Data Peserta (5 Orang)
+                  </h3>
+                  {[1, 2, 3, 4, 5].map((num) => renderPesertaFields(num))}
+                </div>
+
+                {/* Upload Bukti Pembayaran */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Upload Bukti Pembayaran *
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-biru transition-colors">
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                      id="bukti-pembayaran"
+                      required
+                    />
+                    <label
+                      htmlFor="bukti-pembayaran"
+                      className="cursor-pointer"
+                    >
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">
+                        {buktiPembayaran
+                          ? buktiPembayaran.name
+                          : "Klik untuk upload file"}
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-kuning hover:bg-yellow-600 text-white font-heading font-bold py-4 px-6 rounded-2xl transition-all border-2 border-black shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Mengirim...
+                    </>
+                  ) : (
+                    "Daftar Sekarang"
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+
+          {/* Payment Info - Right Side (1 column) */}
+          <div className="lg:col-span-1">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white rounded-3xl p-6 border-2 border-black shadow-xl sticky top-8"
+            >
+              <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
+                Informasi Pembayaran
+              </h3>
+
+              <div className="bg-kuning/10 rounded-2xl p-4 mb-6">
+                <p className="text-sm text-gray-600 mb-2">
+                  Untuk 5 orang peserta •{" "}
+                  {formatPrice(packageData.currentPrice)}
+                </p>
+                <div className="border-t-2 border-gray-200 pt-3 mt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-heading font-bold text-gray-800">
+                      Total Pembayaran
+                    </span>
+                    <span className="font-heading font-bold text-2xl text-kuning">
+                      {formatPrice(packageData.currentPrice)}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Peserta 1-5 */}
-              {[1, 2, 3, 4, 5].map((num) => renderParticipantForm(num))}
-
-              {/* Bukti Pembayaran */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 border-2 border-black">
-                <h2 className="font-heading font-bold text-xl mb-6">
-                  Bukti Pembayaran
-                </h2>
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-biru transition-colors">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    required
-                    onChange={handleFileChange}
-                    className="hidden"
-                    id="bukti-pembayaran"
-                  />
-                  <label htmlFor="bukti-pembayaran" className="cursor-pointer">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-600">
-                      {formData.buktiPembayaran
-                        ? formData.buktiPembayaran.name
-                        : "Klik untuk upload bukti transfer"}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Format: JPG, PNG (Max 5MB)
-                    </p>
-                  </label>
-                </div>
+              <div className="mb-6">
+                <h4 className="font-heading font-bold text-sm text-gray-800 mb-3">
+                  {packageData.name}
+                </h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  {packageData.participants}
+                </p>
+                <Image
+                  src="/qris.png"
+                  alt="QRIS Payment"
+                  width={300}
+                  height={300}
+                  className="w-full rounded-xl border-2 border-gray-200"
+                />
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  Scan kode QR di atas dengan aplikasi pembayaran kamu
+                </p>
               </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-kuning hover:bg-yellow-600 text-white font-heading font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-3 border-2 border-black disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Mengirim...
-                  </>
-                ) : (
-                  "Daftar Sekarang"
-                )}
-              </button>
-            </form>
+            </motion.div>
           </div>
         </div>
       </div>

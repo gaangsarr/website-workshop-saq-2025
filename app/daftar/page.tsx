@@ -104,7 +104,6 @@ export default function Tiket() {
     <section
       ref={ref}
       className="relative py-16 md:py-24 bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden"
-      id="register"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
@@ -114,7 +113,7 @@ export default function Tiket() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-kuning text-stroke-mobile text-stroke mb-4">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-biru mb-4">
             Pilihan Paket
           </h2>
 
