@@ -17,11 +17,21 @@
   {
     "id": 4,
     "question": "Berapa biaya untuk mengikuti workshop?",
-    "answer": "Terdapat 2 paket pilihan: Paket Mandiri (Pre-Sale: Rp 45.000, Normal: Rp 55.000) untuk 1 orang, dan Paket Bertiga (Pre-Sale: Rp 120.000, Normal: Rp 135.000) untuk 3 orang. Harga pre-sale berlaku hingga tanggal yang ditentukan."
+    "answer": "Terdapat 2 paket pilihan: Paket Mandiri Pre-Sale: Rp 45.000, untuk 1 orang, dan Paket Bertiga Pre-Sale: Rp 130.000 untuk 3 orang."
   },
   {
     "id": 5,
     "question": "Apa yang akan dipelajari di workshop ini?",
     "answer": "Peserta akan belajar membangun AI Agent pertama mereka untuk otomasi keuangan personal dan freelance menggunakan platform n8n. Workshop mencakup integrasi AI, otomasi workflow, dan penerapan praktis dalam manajemen keuangan."
+  },
+  {
+    "id": 6,
+    "question": "Barang apa saja yang harus dibawa?",
+    "answer": "Laptop, Charger, Stop Kontak/Terminal, Internet, KTM, dan ATK."
+  },
+  {
+    "id": 7,
+    "question": "Dresscode yang harus digunakan saat acara?",
+    "answer": "Pakaian Sopan dan Rapih (Berkerah)."
   }
 ]
