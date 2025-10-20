@@ -8,6 +8,7 @@ import SpecialThanks from "@/components/SpecialThanks";
 import ScrollingText1 from "@/components/ScrollingText-KURSITERBATAS";
 import GamePromo from "@/components/GamePromo";
 import ChatBot from "@/components/ChatBot";
+import RegistrationStats from "@/components/RegistrationStats";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <Sambutan />
       <ScrollingText />
       <Tiket />
+      <RegistrationStats />
       <ScrollingText1 />
       <GamePromo />
       <FAQ />

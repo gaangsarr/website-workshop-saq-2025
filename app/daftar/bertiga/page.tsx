@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzdheJau3-_7ouGKZfMWOJN-49GWt4AASULwHlJ-DjiFOWgAB3xscFFnuezXolUVP4RIA/exec";
+  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
 
 export default function DaftarBertigaPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
@@ -17,7 +17,6 @@ export default function DaftarBertigaPage() {
   const [formData, setFormData] = useState({
     pemesanWA: "",
     pemesanEmail: "",
-    // Peserta 1
     peserta1_namaLengkap: "",
     peserta1_asalInstansi: "",
     peserta1_status: "Mahasiswa",
@@ -25,7 +24,6 @@ export default function DaftarBertigaPage() {
     peserta1_nim: "",
     peserta1_nomorWA: "",
     peserta1_email: "",
-    // Peserta 2
     peserta2_namaLengkap: "",
     peserta2_asalInstansi: "",
     peserta2_status: "Mahasiswa",
@@ -33,7 +31,6 @@ export default function DaftarBertigaPage() {
     peserta2_nim: "",
     peserta2_nomorWA: "",
     peserta2_email: "",
-    // Peserta 3
     peserta3_namaLengkap: "",
     peserta3_asalInstansi: "",
     peserta3_status: "Mahasiswa",
@@ -45,23 +42,57 @@ export default function DaftarBertigaPage() {
 
   const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
-  if (!packageData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-gray-600">Pendaftaran tidak tersedia saat ini.</p>
-          <Link
-            href="/daftar"
-            className="text-biru hover:underline mt-4 inline-block"
-          >
-            Kembali ke pilihan paket
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const [isFormOpen, setIsFormOpen] = useState<boolean | null>(null);
+  const [isPresale, setIsPresale] = useState<boolean>(true); // ← TAMBAH INI
+  const [quotaInfo, setQuotaInfo] = useState({
+    totalPeserta: 0,
+    maxPeserta: 42,
+    sisaKuota: 42,
+  });
+
+  useEffect(() => {
+    checkFormStatus();
+  }, []);
+
+  const checkFormStatus = async () => {
+    try {
+      console.log("Fetching form status from:", SCRIPT_URL);
+
+      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
+        method: "GET",
+        cache: "no-cache",
+      });
+
+      console.log("Response status:", response.status);
+
+      const data = await response.json();
+
+      console.log("Form status data:", data);
+
+      if (data && typeof data.bertigaOpen !== "undefined") {
+        setIsFormOpen(data.bertigaOpen);
+        setIsPresale(data.isPresale || false); // ← TAMBAH INI
+        setQuotaInfo({
+          totalPeserta: data.totalPeserta || 0,
+          maxPeserta: data.maxBertiga || 42,
+          sisaKuota: Math.max(
+            0,
+            (data.maxBertiga || 42) - (data.totalPeserta || 0)
+          ),
+        });
+      } else {
+        console.error("Invalid data format:", data);
+        setIsFormOpen(true);
+      }
+    } catch (error) {
+      console.error("Error checking form status:", error);
+      setIsFormOpen(true);
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -80,7 +111,6 @@ export default function DaftarBertigaPage() {
     setIsSubmitting(true);
 
     try {
-      // Convert file to base64
       let fileBase64 = "";
       let fileName = "";
       let fileType = "";
@@ -99,12 +129,20 @@ export default function DaftarBertigaPage() {
         fileType = buktiPembayaran.type;
       }
 
-      // Build payload for 3 participants
-      const payload = {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.name = "hidden_iframe";
+      document.body.appendChild(iframe);
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = SCRIPT_URL;
+      form.target = "hidden_iframe";
+
+      const fields = {
         jumlahPeserta: "3",
         pemesanWA: formData.pemesanWA,
         pemesanEmail: formData.pemesanEmail,
-        // Peserta 1
         peserta1_namaLengkap: formData.peserta1_namaLengkap,
         peserta1_asalInstansi: formData.peserta1_asalInstansi,
         peserta1_status: formData.peserta1_status,
@@ -112,7 +150,6 @@ export default function DaftarBertigaPage() {
         peserta1_nim: formData.peserta1_nim || "-",
         peserta1_nomorWA: formData.peserta1_nomorWA,
         peserta1_email: formData.peserta1_email,
-        // Peserta 2
         peserta2_namaLengkap: formData.peserta2_namaLengkap,
         peserta2_asalInstansi: formData.peserta2_asalInstansi,
         peserta2_status: formData.peserta2_status,
@@ -120,7 +157,6 @@ export default function DaftarBertigaPage() {
         peserta2_nim: formData.peserta2_nim || "-",
         peserta2_nomorWA: formData.peserta2_nomorWA,
         peserta2_email: formData.peserta2_email,
-        // Peserta 3
         peserta3_namaLengkap: formData.peserta3_namaLengkap,
         peserta3_asalInstansi: formData.peserta3_asalInstansi,
         peserta3_status: formData.peserta3_status,
@@ -128,33 +164,70 @@ export default function DaftarBertigaPage() {
         peserta3_nim: formData.peserta3_nim || "-",
         peserta3_nomorWA: formData.peserta3_nomorWA,
         peserta3_email: formData.peserta3_email,
-        // File
         buktiPembayaranBase64: fileBase64,
         buktiPembayaranName: fileName,
         buktiPembayaranType: fileType,
       };
 
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      }
 
-      // Wait for processing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSubmitSuccess(true);
+      document.body.appendChild(form);
+      form.submit();
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+
+      setIsSubmitting(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
-    } finally {
+      setErrorMessage(
+        "Terjadi kesalahan saat mengirim data. Silakan coba lagi."
+      );
+      setShowErrorModal(true);
       setIsSubmitting(false);
     }
   };
 
-  if (submitSuccess) {
+  if (isFormOpen === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-pink mx-auto mb-4" />
+          <p className="text-gray-600">Memuat informasi pendaftaran...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ===== FORM TUTUP - PESAN DINAMIS =====
+  if (!isFormOpen) {
+    const closedTitle = isPresale
+      ? "Kuota Pre-Sale Penuh"
+      : "Kuota Pendaftaran Penuh";
+
+    const closedMessage = isPresale
+      ? `Maaf, kuota pre-sale ${
+          packageData?.name || "paket ini"
+        } sudah penuh. Total peserta saat ini: ${
+          quotaInfo.totalPeserta
+        } (batas Paket Bertiga: ${
+          quotaInfo.maxPeserta
+        } peserta). Silakan pilih Paket Mandiri atau nantikan pembukaan pendaftaran normal!`
+      : `Maaf, kuota pendaftaran ${
+          packageData?.name || "paket ini"
+        } sudah penuh. Total peserta: ${quotaInfo.totalPeserta}/${
+          quotaInfo.maxPeserta
+        } (Kuota Paket Bertiga). Silakan pilih Paket Mandiri jika masih tersedia!`;
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <motion.div
@@ -162,34 +235,40 @@ export default function DaftarBertigaPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-xl text-center"
         >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg
-              className="w-10 h-10 text-green-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <XCircle className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
-            Pendaftaran Berhasil! 🎉
+            {closedTitle}
           </h2>
-          <p className="text-gray-600 mb-6">
-            Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
-            WhatsApp untuk konfirmasi selanjutnya.
-          </p>
+          <p className="text-gray-600 mb-6">{closedMessage}</p>
+          <Link href="/daftar">
+            <button className="w-full bg-pink hover:bg-pink-600 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all mb-3 border-2 border-black shadow-lg">
+              Lihat Paket Lain
+            </button>
+          </Link>
           <Link href="/">
-            <button className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all">
+            <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all">
               Kembali ke Home
             </button>
           </Link>
         </motion.div>
+      </div>
+    );
+  }
+
+  if (!packageData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600">Pendaftaran tidak tersedia saat ini.</p>
+          <Link
+            href="/daftar"
+            className="text-pink hover:underline mt-4 inline-block"
+          >
+            Kembali ke pilihan paket
+          </Link>
+        </div>
       </div>
     );
   }
@@ -214,7 +293,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_namaLengkap` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
           />
         </div>
 
@@ -228,7 +307,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_asalInstansi` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
           />
         </div>
 
@@ -240,7 +319,7 @@ export default function DaftarBertigaPage() {
             name={`${prefix}_status`}
             value={status as string}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
           >
             <option value="Mahasiswa">Mahasiswa</option>
             <option value="Pelajar">Pelajar</option>
@@ -260,8 +339,7 @@ export default function DaftarBertigaPage() {
                 value={formData[`${prefix}_jurusan` as keyof typeof formData]}
                 onChange={handleInputChange}
                 required
-                placeholder='Isi "-" apabila Pelajar/Umum'
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
               />
             </div>
             <div>
@@ -274,8 +352,7 @@ export default function DaftarBertigaPage() {
                 value={formData[`${prefix}_nim` as keyof typeof formData]}
                 onChange={handleInputChange}
                 required
-                placeholder='Isi "-" apabila Pelajar/Umum'
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
               />
             </div>
           </>
@@ -292,7 +369,7 @@ export default function DaftarBertigaPage() {
             onChange={handleInputChange}
             required
             placeholder="08xxxxxxxxxx"
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
           />
         </div>
 
@@ -306,7 +383,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_email` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
           />
         </div>
       </div>
@@ -315,17 +392,85 @@ export default function DaftarBertigaPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg
+                className="w-10 h-10 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Pendaftaran Berhasil! 🎉
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
+              WhatsApp untuk konfirmasi selanjutnya.
+            </p>
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                window.location.href = "/";
+              }}
+              className="w-full bg-pink hover:bg-pink-600 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black shadow-lg"
+            >
+              Kembali ke Home
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <XCircle className="w-10 h-10 text-red-600" />
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Terjadi Kesalahan
+            </h2>
+            <p className="text-gray-600 mb-6">{errorMessage}</p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black"
+            >
+              Tutup
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Form content - sisanya sama */}
       <div className="max-w-6xl mx-auto">
         <Link
           href="/daftar"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-biru mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-pink mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           Kembali
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Form - Left Side (2 columns) */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -338,7 +483,6 @@ export default function DaftarBertigaPage() {
               <p className="text-gray-600 mb-6">{packageData.name}</p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Data Pemesan */}
                 <div className="bg-pink/10 rounded-2xl p-6 space-y-4">
                   <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
                     Data Pemesan
@@ -355,7 +499,7 @@ export default function DaftarBertigaPage() {
                       onChange={handleInputChange}
                       required
                       placeholder="08xxxxxxxxxx"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
                     />
                   </div>
 
@@ -369,12 +513,11 @@ export default function DaftarBertigaPage() {
                       value={formData.pemesanEmail}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Data Peserta */}
                 <div className="space-y-4">
                   <h3 className="font-heading font-bold text-xl text-gray-800">
                     Data Peserta (3 Orang)
@@ -382,12 +525,11 @@ export default function DaftarBertigaPage() {
                   {[1, 2, 3].map((num) => renderPesertaFields(num))}
                 </div>
 
-                {/* Upload Bukti Pembayaran */}
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">
                     Upload Bukti Pembayaran *
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-biru transition-colors">
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-pink transition-colors">
                     <input
                       type="file"
                       onChange={handleFileChange}
@@ -428,7 +570,6 @@ export default function DaftarBertigaPage() {
             </motion.div>
           </div>
 
-          {/* Payment Info - Right Side (1 column) */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, x: 20 }}

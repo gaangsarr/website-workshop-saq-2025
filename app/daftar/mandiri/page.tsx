@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
+import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzkthNl8f-amZx692CdM89iRYmAF7nKzq6Hl8AFL9M5MdBQLzdIAi43iphFHMche2i0xg/exec";
+  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
 
 export default function DaftarMandiriPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
@@ -26,23 +27,56 @@ export default function DaftarMandiriPage() {
 
   const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
-  if (!packageData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-gray-600">Pendaftaran tidak tersedia saat ini.</p>
-          <Link
-            href="/daftar"
-            className="text-biru hover:underline mt-4 inline-block"
-          >
-            Kembali ke pilihan paket
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const [isFormOpen, setIsFormOpen] = useState<boolean | null>(null);
+  const [isPresale, setIsPresale] = useState<boolean>(true); // ← TAMBAH INI
+  const [quotaInfo, setQuotaInfo] = useState({
+    totalPeserta: 0,
+    maxPeserta: 45,
+    sisaKuota: 45,
+  });
+
+  useEffect(() => {
+    checkFormStatus();
+  }, []);
+
+  const checkFormStatus = async () => {
+    try {
+      console.log("Fetching form status from:", SCRIPT_URL);
+
+      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
+        method: "GET",
+        cache: "no-cache",
+      });
+
+      console.log("Response status:", response.status);
+
+      const data = await response.json();
+
+      console.log("Form status data:", data);
+
+      if (data && typeof data.mandiriOpen !== "undefined") {
+        setIsFormOpen(data.mandiriOpen); // ← Ganti ke mandiriOpen
+        setIsPresale(data.isPresale || false); // ← TAMBAH INI
+        setQuotaInfo({
+          totalPeserta: data.totalPeserta || 0,
+          maxPeserta: data.maxPeserta || 45,
+          sisaKuota: data.sisaKuota || 0,
+        });
+      } else {
+        console.error("Invalid data format:", data);
+        setIsFormOpen(true);
+      }
+    } catch (error) {
+      console.error("Error checking form status:", error);
+      setIsFormOpen(true);
+    }
+  };
+
+  // ... handleInputChange, handleFileChange, handleSubmit sama seperti sebelumnya
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -61,7 +95,6 @@ export default function DaftarMandiriPage() {
     setIsSubmitting(true);
 
     try {
-      // Convert file to base64
       let fileBase64 = "";
       let fileName = "";
       let fileType = "";
@@ -80,7 +113,17 @@ export default function DaftarMandiriPage() {
         fileType = buktiPembayaran.type;
       }
 
-      const payload = {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.name = "hidden_iframe";
+      document.body.appendChild(iframe);
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = SCRIPT_URL;
+      form.target = "hidden_iframe";
+
+      const fields = {
         jumlahPeserta: "1",
         namaLengkap: formData.namaLengkap,
         asalInstansi: formData.asalInstansi,
@@ -94,27 +137,64 @@ export default function DaftarMandiriPage() {
         buktiPembayaranType: fileType,
       };
 
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      for (const [key, value] of Object.entries(fields)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      }
 
-      // Wait for processing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSubmitSuccess(true);
+      document.body.appendChild(form);
+      form.submit();
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+
+      setIsSubmitting(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
-    } finally {
+      setErrorMessage(
+        "Terjadi kesalahan saat mengirim data. Silakan coba lagi."
+      );
+      setShowErrorModal(true);
       setIsSubmitting(false);
     }
   };
 
-  if (submitSuccess) {
+  if (isFormOpen === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-biru mx-auto mb-4" />
+          <p className="text-gray-600">Memuat informasi pendaftaran...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ===== FORM TUTUP - PESAN DINAMIS =====
+  if (!isFormOpen) {
+    // Tentukan pesan berdasarkan mode
+    const closedTitle = isPresale
+      ? "Kuota Pre-Sale Penuh"
+      : "Kuota Pendaftaran Penuh";
+
+    const closedMessage = isPresale
+      ? `Maaf, kuota pre-sale ${
+          packageData?.name || "paket ini"
+        } sudah penuh (${quotaInfo.totalPeserta}/${
+          quotaInfo.maxPeserta
+        } peserta). Nantikan pembukaan pendaftaran normal!`
+      : `Maaf, kuota pendaftaran ${
+          packageData?.name || "paket ini"
+        } sudah penuh (${quotaInfo.totalPeserta}/${
+          quotaInfo.maxPeserta
+        } peserta). Terima kasih atas minat Anda!`;
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <motion.div
@@ -122,30 +202,20 @@ export default function DaftarMandiriPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-xl text-center"
         >
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg
-              className="w-10 h-10 text-green-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <XCircle className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
-            Pendaftaran Berhasil! 🎉
+            {closedTitle}
           </h2>
-          <p className="text-gray-600 mb-6">
-            Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
-            WhatsApp untuk konfirmasi selanjutnya.
-          </p>
+          <p className="text-gray-600 mb-6">{closedMessage}</p>
+          <Link href="/daftar">
+            <button className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all mb-3 border-2 border-black shadow-lg">
+              Lihat Paket Lain
+            </button>
+          </Link>
           <Link href="/">
-            <button className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all">
+            <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all">
               Kembali ke Home
             </button>
           </Link>
@@ -154,8 +224,94 @@ export default function DaftarMandiriPage() {
     );
   }
 
+  if (!packageData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600">Pendaftaran tidak tersedia saat ini.</p>
+          <Link
+            href="/daftar"
+            className="text-biru hover:underline mt-4 inline-block"
+          >
+            Kembali ke pilihan paket
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ===== FORM BUKA - RENDER NORMAL (sisanya sama) =====
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg
+                className="w-10 h-10 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Pendaftaran Berhasil! 🎉
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
+              WhatsApp untuk konfirmasi selanjutnya.
+            </p>
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                window.location.href = "/";
+              }}
+              className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black shadow-lg"
+            >
+              Kembali ke Home
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <XCircle className="w-10 h-10 text-red-600" />
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Terjadi Kesalahan
+            </h2>
+            <p className="text-gray-600 mb-6">{errorMessage}</p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black"
+            >
+              Tutup
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Form content - sama seperti sebelumnya */}
       <div className="max-w-6xl mx-auto">
         <Link
           href="/daftar"
@@ -166,7 +322,6 @@ export default function DaftarMandiriPage() {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Form - Left Side (2 columns) */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -235,7 +390,6 @@ export default function DaftarMandiriPage() {
                         value={formData.jurusan}
                         onChange={handleInputChange}
                         required
-                        placeholder='Isi "-" jika Pelajar/Umum'
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
                       />
                     </div>
@@ -249,7 +403,6 @@ export default function DaftarMandiriPage() {
                         value={formData.nim}
                         onChange={handleInputChange}
                         required
-                        placeholder='Isi "-" jika Pelajar/Umum'
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
                       />
                     </div>
@@ -330,7 +483,6 @@ export default function DaftarMandiriPage() {
             </motion.div>
           </div>
 
-          {/* Payment Info - Right Side */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
