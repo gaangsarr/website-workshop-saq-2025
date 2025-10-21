@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Users, TrendingUp, Clock, Loader2, AlertCircle } from "lucide-react";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
+  "https://script.google.com/macros/s/AKfycbyKgPjLSsrkabDwU3S2ptOJY4nmsoG-E5e-2CMrmk_ch0xfngs5xiaNuyA3fQK3kNg9/exec";
 
 interface StatsData {
   totalPeserta: number;

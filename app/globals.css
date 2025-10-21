@@ -8,6 +8,10 @@
   --merah: #ff1d21;
   --oren: #ffa726;
   --teal: #009688;
+
+  /* ===== TAMBAH INI - DEFAULT LIGHT MODE ===== */
+  --background: #ffffff;
+  --foreground: #171717; /* ← TEXT HITAM/GELAP */
 }
 
 @theme inline {
@@ -25,10 +29,21 @@
   --color-teal: var(--teal);
 }
 
+/* ===== HAPUS ATAU COMMENT BAGIAN INI ===== */
+/*
 @media (prefers-color-scheme: light) {
   :root {
     --background: #ffffff;
     --foreground: #ededed;
+  }
+}
+*/
+
+/* ===== ATAU KALAU MAU TETAP ADA, GANTI JADI INI ===== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717; /* ← TEXT HITAM, BUKAN #ededed! */
   }
 }
 
@@ -60,7 +75,7 @@
 
 body {
   background: var(--background);
-  color: var(--foreground);
+  color: var(--foreground); /* ← INI JADI #171717 (HITAM) */
 }
 
 /* Smooth Scroll Behavior */
@@ -70,10 +85,10 @@ html {
 
 /* Scroll Offset untuk Sticky Navbar */
 section[id] {
-  scroll-margin-top: 5rem; /* 80px = height navbar */
+  scroll-margin-top: 5rem;
 }
 
-/* Optional: Custom Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -83,12 +98,12 @@ section[id] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4169e1; /* Biru */
+  background: #4169e1;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffd700; /* Kuning */
+  background: #ffd700;
 }
 
 .perspective-1000 {
