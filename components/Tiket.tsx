@@ -79,7 +79,7 @@ function TiketCard({ packageId, index }: TiketCardProps) {
           </ul>
         </div>
 
-        {/* Button */}
+        {/* Button - TETAP PAKAI LINK INTERNAL */}
         <div className="p-6 pt-0">
           <Link href={`/daftar/${packageId}`} className="block w-full">
             <button
@@ -114,7 +114,7 @@ export default function Tiket() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-kuning text-stroke-mobile text-stroke mb-4">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-biru mb-4">
             Pilihan Paket
           </h2>
 

@@ -2,56 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, Loader2, XCircle } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
+  "https://script.google.com/macros/s/AKfycbyKgPjLSsrkabDwU3S2ptOJY4nmsoG-E5e-2CMrmk_ch0xfngs5xiaNuyA3fQK3kNg9/exec";
+const FORM_URL = "https://forms.gle/fpRjHfZaJYKqojKk8";
 
 export default function DaftarBertigaPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
   const packageData = getActivePackage("bertiga");
 
-  const [formData, setFormData] = useState({
-    pemesanWA: "",
-    pemesanEmail: "",
-    peserta1_namaLengkap: "",
-    peserta1_asalInstansi: "",
-    peserta1_status: "Mahasiswa",
-    peserta1_jurusan: "",
-    peserta1_nim: "",
-    peserta1_nomorWA: "",
-    peserta1_email: "",
-    peserta2_namaLengkap: "",
-    peserta2_asalInstansi: "",
-    peserta2_status: "Mahasiswa",
-    peserta2_jurusan: "",
-    peserta2_nim: "",
-    peserta2_nomorWA: "",
-    peserta2_email: "",
-    peserta3_namaLengkap: "",
-    peserta3_asalInstansi: "",
-    peserta3_status: "Mahasiswa",
-    peserta3_jurusan: "",
-    peserta3_nim: "",
-    peserta3_nomorWA: "",
-    peserta3_email: "",
-  });
-
-  const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showErrorModal, setShowErrorModal] = useState(false);
-
   const [isFormOpen, setIsFormOpen] = useState<boolean | null>(null);
-  const [isPresale, setIsPresale] = useState<boolean>(true); // ← TAMBAH INI
+  const [isPresale, setIsPresale] = useState<boolean>(true);
   const [quotaInfo, setQuotaInfo] = useState({
     totalPeserta: 0,
-    maxPeserta: 42,
-    sisaKuota: 42,
+    maxPeserta: 45, // ← Max total keseluruhan
+    maxBertiga: 42, // ← Batas khusus Bertiga
+    sisaKuota: 45,
+    sisaGrupBertiga: 1, // ← TAMBAH INI
   });
 
   useEffect(() => {
@@ -62,35 +33,40 @@ export default function DaftarBertigaPage() {
     try {
       console.log("Fetching form status from:", SCRIPT_URL);
 
-      // const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
-      //   method: "GET",
-      //   cache: "no-cache",
-      // });
       const response = await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "checkStatus" }),
-      });
 
-      console.log("Response status:", response.status);
+      });
 
       const data = await response.json();
 
-      console.log("Form status data:", data);
-
       if (data && typeof data.bertigaOpen !== "undefined") {
         setIsFormOpen(data.bertigaOpen);
-        setIsPresale(data.isPresale || false); // ← TAMBAH INI
+        setIsPresale(data.isPresale || false);
+
+        // Hitung sisa grup bertiga yang bisa daftar
+        const maxTotal = data.maxPeserta || 45;
+        const maxBertiga = data.maxBertiga || 42;
+        const totalPeserta = data.totalPeserta || 0;
+
+        // Sisa slot keseluruhan
+        const sisaSlotTotal = Math.max(0, maxTotal - totalPeserta);
+
+        // Berapa grup bertiga yang masih bisa masuk?
+        // Kalau totalPeserta <= maxBertiga, maka minimal 1 grup (3 peserta) bisa masuk
+        const sisaGrupBertiga =
+          totalPeserta <= maxBertiga ? Math.floor(sisaSlotTotal / 3) : 0;
+
         setQuotaInfo({
-          totalPeserta: data.totalPeserta || 0,
-          maxPeserta: data.maxBertiga || 42,
-          sisaKuota: Math.max(
-            0,
-            (data.maxBertiga || 42) - (data.totalPeserta || 0)
-          ),
+          totalPeserta: totalPeserta,
+          maxPeserta: maxTotal,
+          maxBertiga: maxBertiga,
+          sisaKuota: sisaSlotTotal,
+          sisaGrupBertiga: sisaGrupBertiga,
         });
       } else {
-        console.error("Invalid data format:", data);
         setIsFormOpen(true);
       }
     } catch (error) {
@@ -99,109 +75,7 @@ export default function DaftarBertigaPage() {
     }
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setBuktiPembayaran(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      let fileBase64 = "";
-      let fileName = "";
-      let fileType = "";
-
-      if (buktiPembayaran) {
-        const reader = new FileReader();
-        fileBase64 = await new Promise<string>((resolve, reject) => {
-          reader.onload = () => {
-            const result = reader.result as string;
-            resolve(result.split(",")[1]);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(buktiPembayaran);
-        });
-        fileName = buktiPembayaran.name;
-        fileType = buktiPembayaran.type;
-      }
-
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.name = "hidden_iframe";
-      document.body.appendChild(iframe);
-
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = SCRIPT_URL;
-      form.target = "hidden_iframe";
-
-      const fields = {
-        jumlahPeserta: "3",
-        pemesanWA: formData.pemesanWA,
-        pemesanEmail: formData.pemesanEmail,
-        peserta1_namaLengkap: formData.peserta1_namaLengkap,
-        peserta1_asalInstansi: formData.peserta1_asalInstansi,
-        peserta1_status: formData.peserta1_status,
-        peserta1_jurusan: formData.peserta1_jurusan || "-",
-        peserta1_nim: formData.peserta1_nim || "-",
-        peserta1_nomorWA: formData.peserta1_nomorWA,
-        peserta1_email: formData.peserta1_email,
-        peserta2_namaLengkap: formData.peserta2_namaLengkap,
-        peserta2_asalInstansi: formData.peserta2_asalInstansi,
-        peserta2_status: formData.peserta2_status,
-        peserta2_jurusan: formData.peserta2_jurusan || "-",
-        peserta2_nim: formData.peserta2_nim || "-",
-        peserta2_nomorWA: formData.peserta2_nomorWA,
-        peserta2_email: formData.peserta2_email,
-        peserta3_namaLengkap: formData.peserta3_namaLengkap,
-        peserta3_asalInstansi: formData.peserta3_asalInstansi,
-        peserta3_status: formData.peserta3_status,
-        peserta3_jurusan: formData.peserta3_jurusan || "-",
-        peserta3_nim: formData.peserta3_nim || "-",
-        peserta3_nomorWA: formData.peserta3_nomorWA,
-        peserta3_email: formData.peserta3_email,
-        buktiPembayaranBase64: fileBase64,
-        buktiPembayaranName: fileName,
-        buktiPembayaranType: fileType,
-      };
-
-      for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      }
-
-      document.body.appendChild(form);
-      form.submit();
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-
-      setIsSubmitting(false);
-      setShowSuccessModal(true);
-    } catch (error) {
-      console.error("Error:", error);
-      setErrorMessage(
-        "Terjadi kesalahan saat mengirim data. Silakan coba lagi."
-      );
-      setShowErrorModal(true);
-      setIsSubmitting(false);
-    }
-  };
-
+  // Loading
   if (isFormOpen === null) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -213,7 +87,7 @@ export default function DaftarBertigaPage() {
     );
   }
 
-  // ===== FORM TUTUP - PESAN DINAMIS =====
+  // Form tutup
   if (!isFormOpen) {
     const closedTitle = isPresale
       ? "Kuota Pre-Sale Penuh"
@@ -225,13 +99,13 @@ export default function DaftarBertigaPage() {
         } sudah penuh. Total peserta saat ini: ${
           quotaInfo.totalPeserta
         } (batas Paket Bertiga: ${
-          quotaInfo.maxPeserta
+          quotaInfo.maxBertiga
         } peserta). Silakan pilih Paket Mandiri atau nantikan pembukaan pendaftaran normal!`
       : `Maaf, kuota pendaftaran ${
           packageData?.name || "paket ini"
         } sudah penuh. Total peserta: ${quotaInfo.totalPeserta}/${
-          quotaInfo.maxPeserta
-        } (Kuota Paket Bertiga). Silakan pilih Paket Mandiri jika masih tersedia!`;
+          quotaInfo.maxBertiga
+        }. Silakan pilih Paket Mandiri jika masih tersedia!`;
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -278,195 +152,10 @@ export default function DaftarBertigaPage() {
     );
   }
 
-  const renderPesertaFields = (pesertaNum: number) => {
-    const prefix = `peserta${pesertaNum}`;
-    const status = formData[`${prefix}_status` as keyof typeof formData];
-
-    return (
-      <div key={pesertaNum} className="bg-gray-50 rounded-2xl p-6 space-y-4">
-        <h4 className="font-heading font-bold text-lg text-gray-800 mb-4">
-          Peserta {pesertaNum}
-        </h4>
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Nama Lengkap *
-          </label>
-          <input
-            type="text"
-            name={`${prefix}_namaLengkap`}
-            value={formData[`${prefix}_namaLengkap` as keyof typeof formData]}
-            onChange={handleInputChange}
-            required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Asal Instansi *
-          </label>
-          <input
-            type="text"
-            name={`${prefix}_asalInstansi`}
-            value={formData[`${prefix}_asalInstansi` as keyof typeof formData]}
-            onChange={handleInputChange}
-            required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Status *
-          </label>
-          <select
-            name={`${prefix}_status`}
-            value={status as string}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-          >
-            <option value="Mahasiswa">Mahasiswa</option>
-            <option value="Pelajar">Pelajar</option>
-            <option value="Umum">Umum</option>
-          </select>
-        </div>
-
-        {status === "Mahasiswa" && (
-          <>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Jurusan *
-              </label>
-              <input
-                type="text"
-                name={`${prefix}_jurusan`}
-                value={formData[`${prefix}_jurusan` as keyof typeof formData]}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                NIM *
-              </label>
-              <input
-                type="text"
-                name={`${prefix}_nim`}
-                value={formData[`${prefix}_nim` as keyof typeof formData]}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-              />
-            </div>
-          </>
-        )}
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Nomor WhatsApp *
-          </label>
-          <input
-            type="tel"
-            name={`${prefix}_nomorWA`}
-            value={formData[`${prefix}_nomorWA` as keyof typeof formData]}
-            onChange={handleInputChange}
-            required
-            placeholder="08xxxxxxxxxx"
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            Email *
-          </label>
-          <input
-            type="email"
-            name={`${prefix}_email`}
-            value={formData[`${prefix}_email` as keyof typeof formData]}
-            onChange={handleInputChange}
-            required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-          />
-        </div>
-      </div>
-    );
-  };
-
+  // Form buka - Redirect ke Google Form
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
-          >
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                className="w-10 h-10 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
-              Pendaftaran Berhasil! 🎉
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
-              WhatsApp untuk konfirmasi selanjutnya.
-            </p>
-            <button
-              onClick={() => {
-                setShowSuccessModal(false);
-                window.location.href = "/";
-              }}
-              className="w-full bg-pink hover:bg-pink-600 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black shadow-lg"
-            >
-              Kembali ke Home
-            </button>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Error Modal */}
-      {showErrorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
-          >
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <XCircle className="w-10 h-10 text-red-600" />
-            </div>
-            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
-              Terjadi Kesalahan
-            </h2>
-            <p className="text-gray-600 mb-6">{errorMessage}</p>
-            <button
-              onClick={() => setShowErrorModal(false)}
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black"
-            >
-              Tutup
-            </button>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Form content - sisanya sama */}
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <Link
           href="/daftar"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-pink mb-6 transition-colors"
@@ -475,154 +164,69 @@ export default function DaftarBertigaPage() {
           Kembali
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-3xl p-6 md:p-8 border-2 border-black shadow-xl"
-            >
-              <h1 className="font-heading font-bold text-3xl text-pink mb-2">
-                Formulir Pendaftaran
-              </h1>
-              <p className="text-gray-600 mb-6">{packageData.name}</p>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-pink/10 rounded-2xl p-6 space-y-4">
-                  <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
-                    Data Pemesan
-                  </h3>
-
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Nomor WhatsApp Pemesan *
-                    </label>
-                    <input
-                      type="tel"
-                      name="pemesanWA"
-                      value={formData.pemesanWA}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="08xxxxxxxxxx"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Email Pemesan *
-                    </label>
-                    <input
-                      type="email"
-                      name="pemesanEmail"
-                      value={formData.pemesanEmail}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="font-heading font-bold text-xl text-gray-800">
-                    Data Peserta (3 Orang)
-                  </h3>
-                  {[1, 2, 3].map((num) => renderPesertaFields(num))}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Upload Bukti Pembayaran *
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-pink transition-colors">
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      accept="image/*"
-                      className="hidden"
-                      id="bukti-pembayaran"
-                      required
-                    />
-                    <label
-                      htmlFor="bukti-pembayaran"
-                      className="cursor-pointer"
-                    >
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">
-                        {buktiPembayaran
-                          ? buktiPembayaran.name
-                          : "Klik untuk upload file"}
-                      </p>
-                    </label>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-pink hover:bg-pink-600 text-white font-heading font-bold py-4 px-6 rounded-2xl transition-all border-2 border-black shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Mengirim...
-                    </>
-                  ) : (
-                    "Daftar Sekarang"
-                  )}
-                </button>
-              </form>
-            </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl p-8 border-2 border-black shadow-xl text-center"
+        >
+          <div className="w-20 h-20 bg-pink/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ExternalLink className="w-10 h-10 text-pink" />
           </div>
 
-          <div className="lg:col-span-1">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-3xl p-6 border-2 border-black shadow-xl sticky top-8"
-            >
-              <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
-                Informasi Pembayaran
-              </h3>
+          <h1 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+            Formulir Pendaftaran {packageData.name}
+          </h1>
 
-              <div className="bg-pink/10 rounded-2xl p-4 mb-6">
-                <p className="text-sm text-gray-600 mb-2">
-                  Untuk 3 orang peserta •{" "}
-                  {formatPrice(packageData.currentPrice)}
-                </p>
-                <div className="border-t-2 border-gray-200 pt-3 mt-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-heading font-bold text-gray-800">
-                      Total Pembayaran
-                    </span>
-                    <span className="font-heading font-bold text-2xl text-pink">
-                      {formatPrice(packageData.currentPrice)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+          <p className="text-gray-600 mb-2">
+            {packageData.participants} • {formatPrice(packageData.currentPrice)}
+          </p>
 
-              <div className="mb-6">
-                <h4 className="font-heading font-bold text-sm text-gray-800 mb-3">
-                  {packageData.name}
-                </h4>
-                <p className="text-sm text-gray-600 mb-3">
-                  {packageData.participants}
-                </p>
-                <Image
-                  src="/qris.png"
-                  alt="QRIS Payment"
-                  width={300}
-                  height={300}
-                  className="w-full rounded-xl border-2 border-gray-200"
-                />
-                <p className="text-xs text-gray-500 mt-2 text-center">
-                  Scan kode QR di atas dengan aplikasi pembayaran kamu
-                </p>
-              </div>
-            </motion.div>
+          <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2xl p-4 mb-6 inline-block">
+            <p className="text-sm font-bold text-yellow-800">
+              ⚡ Sisa Kuota Paket Bertiga: {quotaInfo.sisaGrupBertiga} grup (
+              {quotaInfo.sisaGrupBertiga * 3} peserta)
+            </p>
+            <p className="text-xs text-yellow-700 mt-1">
+              Total pendaftar saat ini: {quotaInfo.totalPeserta}/
+              {quotaInfo.maxPeserta}
+            </p>
           </div>
-        </div>
+
+          <p className="text-gray-600 mb-8">
+            Kamu akan diarahkan ke Google Form untuk mengisi data pendaftaran 3
+            orang peserta.
+          </p>
+
+          <a
+            href={FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-pink hover:bg-pink-600 text-white font-heading font-bold py-4 px-8 rounded-2xl transition-all border-2 border-black shadow-lg hover:shadow-xl"
+          >
+            Buka Form Pendaftaran
+            <ExternalLink className="w-5 h-5" />
+          </a>
+
+          <div className="mt-8 pt-8 border-t-2 border-gray-200">
+            <h3 className="font-heading font-bold text-lg text-gray-800 mb-4">
+              Informasi Pembayaran
+            </h3>
+            <Image
+              src="/qris.png"
+              alt="QRIS Payment"
+              width={300}
+              height={300}
+              className="w-64 mx-auto rounded-xl border-2 border-gray-200 mb-4"
+            />
+            <p className="text-sm text-gray-600 mb-2">
+              Scan QRIS di atas untuk pembayaran
+            </p>
+            <p className="text-xl font-heading font-bold text-pink">
+              {formatPrice(packageData.currentPrice)}
+            </p>
+            <p className="text-sm text-gray-500 mt-2">Untuk 3 orang peserta</p>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
