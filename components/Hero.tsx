@@ -55,7 +55,7 @@ export default function Hero() {
                 Build Your First AI Agent
               </h2>
               <p className="font-poppins font-bold text-2xl md:text-2xl text-pink text-stroke-mobile text-center md:text-left">
-                Automation for Personal & Freelance Finance with N8N
+                Automation for Personal & Tech Freelancer
               </p>
             </motion.div>
 

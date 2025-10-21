@@ -60,8 +60,8 @@ export default function MengulikWS() {
             >
               Tahun 2025, Workshop Lab. SAQ mengangkat tema{" "}
               <span className="font-heading font-bold">
-                "Build Your First AI Agent: Automation for Personal & Freelance
-                Finance with n8n"
+                "Build Your First AI Agent: Automation for Personal & Tech
+                Freelancer"
               </span>{" "}
               sebagai bentuk eksplorasi integrasi antara kecerdasan buatan (AI)
               dan otomatisasi keuangan. Melalui tema ini, peserta diajak untuk

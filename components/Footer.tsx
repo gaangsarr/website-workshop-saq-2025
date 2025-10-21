@@ -33,8 +33,8 @@ export default function Footer() {
             </Link>
 
             <p className="text-white text-sm md:text-base leading-relaxed">
-              Build Your First AI Agent: Automation for Personal & Freelance
-              Finance with n8n
+              Build Your First AI Agent: Automation for Personal & Tech
+              Freelancer
             </p>
           </div>
 
@@ -50,6 +50,14 @@ export default function Footer() {
                   className="text-white hover:text-kuning transition-colors text-sm md:text-base"
                 >
                   Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/game"
+                  className="text-white hover:text-kuning transition-colors text-sm md:text-base"
+                >
+                  Game
                 </Link>
               </li>
               <li>

@@ -43,12 +43,13 @@ export default function Sambutan() {
                   <p>
                     Sebagai Kepala Laboratorium Software Architecture and
                     Quality (SAQ) FTEN ITPLN, saya mengundang rekan-rekan
-                    mahasiswa untuk bergabung dalam Workshop SAQ: Automation and
-                    Finance in the Digital 5.0 Era. Kita akan mengeksplorasi
-                    bagaimana otomatisasi dan inovasi digital berperan penting
-                    dalam transformasi sistem finansial modern. Mari bersama
-                    memperluas wawasan, berdiskusi, dan membangun kolaborasi
-                    menuju masa depan teknologi yang lebih cerdas.
+                    mahasiswa untuk bergabung dalam Workshop SAQ, Build Your
+                    First AI Agent: Automation for Personal & Tech Freelancer.
+                    Kita akan mengeksplorasi bagaimana otomatisasi dan inovasi
+                    digital berperan penting dalam transformasi sistem finansial
+                    modern. Mari bersama memperluas wawasan, berdiskusi, dan
+                    membangun kolaborasi menuju masa depan teknologi yang lebih
+                    cerdas.
                   </p>
                 </div>
 
@@ -111,12 +112,13 @@ export default function Sambutan() {
                   <p>
                     Sebagai Kepala Laboratorium Software Architecture and
                     Quality (SAQ) FTEN ITPLN, saya mengundang rekan-rekan
-                    mahasiswa untuk bergabung dalam Workshop SAQ: Automation and
-                    Finance in the Digital 5.0 Era. Kita akan mengeksplorasi
-                    bagaimana otomatisasi dan inovasi digital berperan penting
-                    dalam transformasi sistem finansial modern. Mari bersama
-                    memperluas wawasan, berdiskusi, dan membangun kolaborasi
-                    menuju masa depan teknologi yang lebih cerdas.
+                    mahasiswa untuk bergabung dalam Workshop SAQ, Build Your
+                    First AI Agent: Automation for Personal & Tech Freelancer.
+                    Kita akan mengeksplorasi bagaimana otomatisasi dan inovasi
+                    digital berperan penting dalam transformasi sistem finansial
+                    modern. Mari bersama memperluas wawasan, berdiskusi, dan
+                    membangun kolaborasi menuju masa depan teknologi yang lebih
+                    cerdas.
                   </p>
                 </div>
 
