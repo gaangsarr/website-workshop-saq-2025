@@ -47,9 +47,14 @@ export default function DaftarMandiriPage() {
     try {
       console.log("Fetching form status from:", SCRIPT_URL);
 
-      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
-        method: "GET",
-        cache: "no-cache",
+      // const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
+      //   method: "GET",
+      //   cache: "no-cache",
+      // });
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "checkStatus" }),
       });
 
       console.log("Response status:", response.status);

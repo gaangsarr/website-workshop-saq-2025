@@ -21,7 +21,7 @@ interface PackageConfig {
 
 export const ticketConfig = {
   salesStatus: {
-    isPreSaleOpen: false,
+    isPreSaleOpen: true,
     isNormalSaleOpen: false,
     closedMessage:
       "Penjualan tiket sementara ditutup. Website sedang tahap pemeliharaan! Akan dibuka lagi 22 Oktober 2025",
