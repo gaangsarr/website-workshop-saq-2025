@@ -21,10 +21,10 @@ interface PackageConfig {
 
 export const ticketConfig = {
   salesStatus: {
-    isPreSaleOpen: true,
+    isPreSaleOpen: false,
     isNormalSaleOpen: false,
     closedMessage:
-      "Penjualan tiket sementara ditutup. Website sedang tahap pemeliharaan! Akan dibuka lagi 22 Oktober 2025",
+      "Penjualan tiket Pre-Sale sudah HABIS. Coming Soon NORMAL SALE!",
     preSaleEndDate: "2025-10-10T23:59:59",
   },
   packages: {
