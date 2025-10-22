@@ -19,7 +19,7 @@ export default function Home() {
       <Sambutan />
       <ScrollingText />
       <Tiket />
-      <RegistrationStats />
+      {/* <RegistrationStats /> */}
       <ScrollingText1 />
       <GamePromo />
       <FAQ />
