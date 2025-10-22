@@ -31,9 +31,13 @@ export default function DaftarBertigaPage() {
 
   const checkFormStatus = async () => {
     try {
-      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
-        method: "GET",
-        cache: "no-cache",
+      console.log("Fetching form status from:", SCRIPT_URL);
+
+      const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "checkStatus" }),
+
       });
 
       const data = await response.json();
