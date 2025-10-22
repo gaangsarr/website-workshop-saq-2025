@@ -79,7 +79,7 @@ function TiketCard({ packageId, index }: TiketCardProps) {
           </ul>
         </div>
 
-        {/* Button - TETAP PAKAI LINK INTERNAL */}
+        {/* Button */}
         <div className="p-6 pt-0">
           <Link href={`/daftar/${packageId}`} className="block w-full">
             <button
@@ -103,10 +103,10 @@ export default function Tiket() {
   return (
     <section
       ref={ref}
-      className="relative py-16 md:py-24 bg-white overflow-hidden"
+      className="relative py-16 md:py-24 bg-white overflow-hidden min-h-screen flex items-center"
       id="register"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -114,13 +114,13 @@ export default function Tiket() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-biru mb-4">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-biru mb-4 text-stroke-mobile md:text-stroke">
             Pilihan Paket
           </h2>
 
           {/* Status Banner */}
           {!isSalesOpen() && (
-            <div className="inline-flex items-center gap-3 bg-yellow-100 border-2 border-yellow-400 text-yellow-800 px-6 py-3 rounded-2xl mt-4">
+            <div className="inline-flex items-center gap-3 bg-merah border-2 text-black px-6 py-3 rounded-2xl mt-4">
               <AlertCircle className="w-5 h-5" />
               <p className="font-heading font-bold">
                 {config.salesStatus.closedMessage}
