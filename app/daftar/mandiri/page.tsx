@@ -2,25 +2,37 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ExternalLink, Loader2, XCircle } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
+import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
-<<<<<<< HEAD
-  "https://script.google.com/macros/s/AKfycbyKgPjLSsrkabDwU3S2ptOJY4nmsoG-E5e-2CMrmk_ch0xfngs5xiaNuyA3fQK3kNg9/exec"; // ← GANTI DENGAN SCRIPT ID KAMU
-const FORM_URL = "https://forms.gle/KUfxExGxvoeJJXVn6";
-=======
   "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
->>>>>>> update-open-normal-v1
 
 export default function DaftarMandiriPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
   const packageData = getActivePackage("mandiri");
 
+  const [formData, setFormData] = useState({
+    namaLengkap: "",
+    asalInstansi: "",
+    status: "Mahasiswa",
+    jurusan: "",
+    nim: "",
+    nomorWA: "",
+    email: "",
+  });
+
+  const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
   const [isFormOpen, setIsFormOpen] = useState<boolean | null>(null);
-  const [isPresale, setIsPresale] = useState<boolean>(true);
+  const [isPresale, setIsPresale] = useState<boolean>(true); // ← TAMBAH INI
   const [quotaInfo, setQuotaInfo] = useState({
     totalPeserta: 0,
     maxPeserta: 45,
@@ -35,33 +47,29 @@ export default function DaftarMandiriPage() {
     try {
       console.log("Fetching form status from API proxy");
 
-<<<<<<< HEAD
-      const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "checkStatus" }),
-=======
       // Call the Next.js API route instead of directly calling Google Apps Script
       // This avoids CORS issues since the API route runs on the same origin
       const response = await fetch("/api/check-quota", {
         method: "GET",
         cache: "no-cache",
       });
->>>>>>> update-open-normal-v1
 
-      });
+      console.log("Response status:", response.status);
 
       const data = await response.json();
 
+      console.log("Form status data:", data);
+
       if (data && typeof data.mandiriOpen !== "undefined") {
-        setIsFormOpen(data.mandiriOpen);
-        setIsPresale(data.isPresale || false);
+        setIsFormOpen(data.mandiriOpen); // ← Ganti ke mandiriOpen
+        setIsPresale(data.isPresale || false); // ← TAMBAH INI
         setQuotaInfo({
           totalPeserta: data.totalPeserta || 0,
           maxPeserta: data.maxPeserta || 45,
           sisaKuota: data.sisaKuota || 0,
         });
       } else {
+        console.error("Invalid data format:", data);
         setIsFormOpen(true);
       }
     } catch (error) {
@@ -70,9 +78,6 @@ export default function DaftarMandiriPage() {
     }
   };
 
-<<<<<<< HEAD
-  // Loading
-=======
   // ... handleInputChange, handleFileChange, handleSubmit sama seperti sebelumnya
 
   const handleInputChange = (
@@ -150,7 +155,6 @@ export default function DaftarMandiriPage() {
     }
   };
 
->>>>>>> update-open-normal-v1
   if (isFormOpen === null) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -162,8 +166,9 @@ export default function DaftarMandiriPage() {
     );
   }
 
-  // Form tutup
+  // ===== FORM TUTUP - PESAN DINAMIS =====
   if (!isFormOpen) {
+    // Tentukan pesan berdasarkan mode
     const closedTitle = isPresale
       ? "Kuota Pre-Sale Penuh"
       : "Kuota Pendaftaran Penuh";
@@ -225,10 +230,79 @@ export default function DaftarMandiriPage() {
     );
   }
 
-  // Form buka - Redirect ke Google Form
+  // ===== FORM BUKA - RENDER NORMAL (sisanya sama) =====
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg
+                className="w-10 h-10 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Pendaftaran Berhasil! 🎉
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Data kamu sudah kami terima. Kami akan menghubungi kamu melalui
+              WhatsApp untuk konfirmasi selanjutnya.
+            </p>
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                window.location.href = "/";
+              }}
+              className="w-full bg-biru hover:bg-blue-700 text-white font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black shadow-lg"
+            >
+              Kembali ke Home
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-black shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <XCircle className="w-10 h-10 text-red-600" />
+            </div>
+            <h2 className="font-heading font-bold text-3xl text-gray-800 mb-4">
+              Terjadi Kesalahan
+            </h2>
+            <p className="text-gray-600 mb-6">{errorMessage}</p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-heading font-bold py-3 px-6 rounded-2xl transition-all border-2 border-black"
+            >
+              Tutup
+            </button>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Form content - sama seperti sebelumnya */}
+      <div className="max-w-6xl mx-auto">
         <Link
           href="/daftar"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-biru mb-6 transition-colors"
@@ -237,15 +311,6 @@ export default function DaftarMandiriPage() {
           Kembali
         </Link>
 
-<<<<<<< HEAD
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 border-2 border-black shadow-xl text-center"
-        >
-          <div className="w-20 h-20 bg-biru/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <ExternalLink className="w-10 h-10 text-biru" />
-=======
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <motion.div
@@ -406,57 +471,56 @@ export default function DaftarMandiriPage() {
                 </button>
               </form>
             </motion.div>
->>>>>>> update-open-normal-v1
           </div>
 
-          <h1 className="font-heading font-bold text-3xl text-gray-800 mb-4">
-            Formulir Pendaftaran {packageData.name}
-          </h1>
+          <div className="lg:col-span-1">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white rounded-3xl p-6 border-2 border-black shadow-xl sticky top-8"
+            >
+              <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
+                Informasi Pembayaran
+              </h3>
 
-          <p className="text-gray-600 mb-2">
-            {packageData.participants} • {formatPrice(packageData.currentPrice)}
-          </p>
+              <div className="bg-biru/10 rounded-2xl p-4 mb-6">
+                <p className="text-sm text-gray-600 mb-2">
+                  {packageData.participants} •{" "}
+                  {formatPrice(packageData.currentPrice)}
+                </p>
+                <div className="border-t-2 border-gray-200 pt-3 mt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-heading font-bold text-gray-800">
+                      Total Pembayaran
+                    </span>
+                    <span className="font-heading font-bold text-2xl text-biru">
+                      {formatPrice(packageData.currentPrice)}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-          <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2xl p-4 mb-6 inline-block">
-            <p className="text-sm font-bold text-yellow-800">
-              ⚡ Sisa Kuota: {quotaInfo.sisaKuota} dari {quotaInfo.maxPeserta}{" "}
-              peserta
-            </p>
+              <div className="mb-6">
+                <h4 className="font-heading font-bold text-sm text-gray-800 mb-3">
+                  {packageData.name}
+                </h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  {packageData.participants}
+                </p>
+                <Image
+                  src="/qris.png"
+                  alt="QRIS Payment"
+                  width={300}
+                  height={300}
+                  className="w-full rounded-xl border-2 border-gray-200"
+                />
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  Scan kode QR di atas dengan aplikasi pembayaran kamu
+                </p>
+              </div>
+            </motion.div>
           </div>
-
-          <p className="text-gray-600 mb-8">
-            Kamu akan diarahkan ke Google Form untuk mengisi data pendaftaran.
-          </p>
-
-          <a
-            href={FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-biru hover:bg-blue-700 text-white font-heading font-bold py-4 px-8 rounded-2xl transition-all border-2 border-black shadow-lg hover:shadow-xl"
-          >
-            Buka Form Pendaftaran
-            <ExternalLink className="w-5 h-5" />
-          </a>
-
-          <div className="mt-8 pt-8 border-t-2 border-gray-200">
-            <h3 className="font-heading font-bold text-lg text-gray-800 mb-4">
-              Informasi Pembayaran
-            </h3>
-            <Image
-              src="/qris.png"
-              alt="QRIS Payment"
-              width={300}
-              height={300}
-              className="w-64 mx-auto rounded-xl border-2 border-gray-200 mb-4"
-            />
-            <p className="text-sm text-gray-600 mb-2">
-              Scan QRIS di atas untuk pembayaran
-            </p>
-            <p className="text-xl font-heading font-bold text-biru">
-              {formatPrice(packageData.currentPrice)}
-            </p>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -5,11 +5,7 @@ import { motion } from "framer-motion";
 import { Users, TrendingUp, Clock, Loader2, AlertCircle } from "lucide-react";
 
 const SCRIPT_URL =
-<<<<<<< HEAD
-  "https://script.google.com/macros/s/AKfycbyKgPjLSsrkabDwU3S2ptOJY4nmsoG-E5e-2CMrmk_ch0xfngs5xiaNuyA3fQK3kNg9/exec";
-=======
   "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
->>>>>>> update-open-normal-v1
 
 interface StatsData {
   totalPeserta: number;

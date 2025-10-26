@@ -21,10 +21,10 @@ export default function Tiket() {
   return (
     <section
       ref={ref}
-      className="relative py-16 md:py-24 bg-white overflow-hidden min-h-screen flex items-center"
+      className="relative py-16 md:py-24 bg-white overflow-hidden"
       id="register"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -32,21 +32,10 @@ export default function Tiket() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="font-heading font-bold text-4xl md:text-5xl text-biru mb-4 text-stroke-mobile md:text-stroke">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-kuning text-stroke-mobile text-stroke mb-4">
             Pilihan Paket
           </h2>
 
-<<<<<<< HEAD
-          {/* Status Banner */}
-          {!isSalesOpen() && (
-            <div className="inline-flex items-center gap-3 bg-merah border-2 text-black px-6 py-3 rounded-2xl mt-4">
-              <AlertCircle className="w-5 h-5" />
-              <p className="font-heading font-bold">
-                {config.salesStatus.closedMessage}
-              </p>
-            </div>
-          )}
-=======
           {/* Status Banner - Only render on client after mount */}
           {isMounted && (
             <>
@@ -58,7 +47,6 @@ export default function Tiket() {
                   </p>
                 </div>
               )}
->>>>>>> update-open-normal-v1
 
               {config.salesStatus.isPreSaleOpen && (
                 <div className="inline-flex items-center gap-3 bg-merah/10 border-2 border-merah text-merah px-6 py-3 rounded-2xl mt-4">
