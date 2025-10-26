@@ -171,7 +171,7 @@ export default function Sambutan() {
                     Cendekia Luthfieta Nazalia
                   </p>
                   <p className="font-body text-white text-sm">
-                    Technician Perencanaan SCADA - PLN Icon Plus
+                    Planning Technician SCADA - PLN Icon Plus
                   </p>
 
                   {/* Social Media Links - Mobile */}
@@ -283,7 +283,7 @@ export default function Sambutan() {
                     Cendekia Luthfieta Nazalia
                   </p>
                   <p className="font-body text-white text-sm lg:text-base">
-                    Technician Perencanaan SCADA - PLN Icon Plus
+                    Planning Technician SCADA - PLN Icon Plus
                   </p>
 
                   {/* Social Media Links - Desktop */}

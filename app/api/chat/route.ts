@@ -32,12 +32,13 @@ Informasi Workshop:
 - Waktu: 08:00 - 15:30 WIB
 - Lokasi: Ruang Pembangkit, Lantai 2, Institut Teknologi PLN
 - Alamat: Menara PLN, Jl. Lingkar Luar Barat, RT.1/RW.1, Duri Kosambi, Kecamatan Cengkareng, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11750
-- Kuota: 125 peserta
+- Kuota: 112 peserta
+- Sisa kuota: Diupdate dihalaman bagian bawah, update otomatis.
+- Supported by: Institut Teknologi PLN, Fakultas Telematika Energi, Asisten Laboratorium Komputer, Laboratorium Software Architecture & Quality
 
 Harga:
-- Pre-Sale & Normal: Paket Mandiri Pre-Sale (1 orang) Rp 45.000, Paket Bertiga Pre-Sale (3 orang) Rp 120.000
-- Harga Normal menyusul, pantau terus ig lab saq di @saqlab.itpln
-- Pre-sale akan berakhir ketika kuota pre-sale terpenuhi (30 peserta)
+- Pre-Sale: Tiket Pre-Sale SUDAH HABIS!
+- Harga Normal: Mandiri = Rp 55.000, Bertiga = Rp 155.000
 
 Materi Workshop:
 - n8n workflow automation
@@ -52,7 +53,7 @@ Fasilitas:
 - Dorprize
 
 Persyaratan:
-- Wajib membawa: Laptop, Charger, Stop Kontak, dan Internet
+- Wajib membawa: Laptop, Charger, Stop Kontak, KTM/E-KTM, dan Internet
 - Disarankan: Mouse, Notebook untuk catatan
 - Level: Pemula hingga menengah (tidak perlu pengalaman khusus)
 

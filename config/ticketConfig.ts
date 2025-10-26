@@ -32,6 +32,7 @@ export const ticketConfig = {
       id: "mandiri",
       name: "Paket Mandiri",
       participants: "1 Orang",
+      badge: "Gokil",
       preSale: {
         enabled: true,
         price: 45000,
