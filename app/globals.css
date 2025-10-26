@@ -29,13 +29,18 @@
   --color-teal: var(--teal);
 }
 
+<<<<<<< HEAD
 /* ===== HAPUS ATAU COMMENT BAGIAN INI ===== */
 /*
 @media (prefers-color-scheme: light) {
+=======
+/* @media (prefers-color-scheme: light) {
+>>>>>>> update-open-normal-v1
   :root {
     --background: #ffffff;
     --foreground: #ededed;
   }
+<<<<<<< HEAD
 }
 */
 
@@ -46,6 +51,9 @@
     --foreground: #171717; /* ← TEXT HITAM, BUKAN #ededed! */
   }
 }
+=======
+} */
+>>>>>>> update-open-normal-v1
 
 @layer utilities {
   /* Mobile stroke (default) */

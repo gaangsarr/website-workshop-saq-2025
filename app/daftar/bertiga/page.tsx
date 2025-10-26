@@ -6,10 +6,15 @@ import { ArrowLeft, ExternalLink, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
+import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
+<<<<<<< HEAD
   "https://script.google.com/macros/s/AKfycbyKgPjLSsrkabDwU3S2ptOJY4nmsoG-E5e-2CMrmk_ch0xfngs5xiaNuyA3fQK3kNg9/exec";
 const FORM_URL = "https://forms.gle/fpRjHfZaJYKqojKk8";
+=======
+  "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
+>>>>>>> update-open-normal-v1
 
 export default function DaftarBertigaPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
@@ -33,10 +38,22 @@ export default function DaftarBertigaPage() {
     try {
       console.log("Fetching form status from:", SCRIPT_URL);
 
+<<<<<<< HEAD
       const response = await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "checkStatus" }),
+=======
+      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
+        method: "GET",
+        cache: "no-cache",
+      });
+      // const response = await fetch(SCRIPT_URL, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ action: "checkStatus" }),
+      // });
+>>>>>>> update-open-normal-v1
 
       });
 
@@ -75,7 +92,149 @@ export default function DaftarBertigaPage() {
     }
   };
 
+<<<<<<< HEAD
   // Loading
+=======
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setBuktiPembayaran(e.target.files[0]);
+    }
+  };
+
+  const fillDummyData = () => {
+    setFormData({
+      pemesanWA: "081234567890",
+      pemesanEmail: "pemesan@example.com",
+      peserta1_namaLengkap: "Budi Santoso",
+      peserta1_asalInstansi: "Universitas Indonesia",
+      peserta1_status: "Mahasiswa",
+      peserta1_jurusan: "Teknik Informatika",
+      peserta1_nim: "2106123456",
+      peserta1_nomorWA: "081111111111",
+      peserta1_email: "budi@example.com",
+      peserta2_namaLengkap: "Siti Rahmawati",
+      peserta2_asalInstansi: "ITB",
+      peserta2_status: "Mahasiswa",
+      peserta2_jurusan: "Sistem Informasi",
+      peserta2_nim: "2107654321",
+      peserta2_nomorWA: "082222222222",
+      peserta2_email: "siti@example.com",
+      peserta3_namaLengkap: "Ahmad Hidayat",
+      peserta3_asalInstansi: "UNPAD",
+      peserta3_status: "Mahasiswa",
+      peserta3_jurusan: "Teknik Komputer",
+      peserta3_nim: "2108999888",
+      peserta3_nomorWA: "083333333333",
+      peserta3_email: "ahmad@example.com",
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      let fileBase64 = "";
+      let fileName = "";
+      let fileType = "";
+
+      if (buktiPembayaran) {
+        const reader = new FileReader();
+        fileBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => {
+            const result = reader.result as string;
+            resolve(result.split(",")[1]);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(buktiPembayaran);
+        });
+        fileName = buktiPembayaran.name;
+        fileType = buktiPembayaran.type;
+      }
+
+      // --- Log to server terminal ---
+      await fetch("/api/log-submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "Form Bertiga submitted",
+          data: {
+            pemesanWA: formData.pemesanWA,
+            pemesanEmail: formData.pemesanEmail,
+            peserta1_namaLengkap: formData.peserta1_namaLengkap,
+            peserta2_namaLengkap: formData.peserta2_namaLengkap,
+            peserta3_namaLengkap: formData.peserta3_namaLengkap,
+            fileName: fileName,
+          },
+        }),
+      });
+      // --- End Log to server terminal ---
+
+      // ✅ SUBMIT TO API PROXY (instead of direct form submission)
+      // This avoids iOS Safari CORS issues by using server-to-server communication
+      const response = await fetch("/api/submit-registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jumlahPeserta: "3",
+          pemesanWA: formData.pemesanWA,
+          pemesanEmail: formData.pemesanEmail,
+          peserta1_namaLengkap: formData.peserta1_namaLengkap,
+          peserta1_asalInstansi: formData.peserta1_asalInstansi,
+          peserta1_status: formData.peserta1_status,
+          peserta1_jurusan: formData.peserta1_jurusan || "-",
+          peserta1_nim: formData.peserta1_nim || "-",
+          peserta1_nomorWA: formData.peserta1_nomorWA,
+          peserta1_email: formData.peserta1_email,
+          peserta2_namaLengkap: formData.peserta2_namaLengkap,
+          peserta2_asalInstansi: formData.peserta2_asalInstansi,
+          peserta2_status: formData.peserta2_status,
+          peserta2_jurusan: formData.peserta2_jurusan || "-",
+          peserta2_nim: formData.peserta2_nim || "-",
+          peserta2_nomorWA: formData.peserta2_nomorWA,
+          peserta2_email: formData.peserta2_email,
+          peserta3_namaLengkap: formData.peserta3_namaLengkap,
+          peserta3_asalInstansi: formData.peserta3_asalInstansi,
+          peserta3_status: formData.peserta3_status,
+          peserta3_jurusan: formData.peserta3_jurusan || "-",
+          peserta3_nim: formData.peserta3_nim || "-",
+          peserta3_nomorWA: formData.peserta3_nomorWA,
+          peserta3_email: formData.peserta3_email,
+          buktiPembayaranBase64: fileBase64,
+          buktiPembayaranName: fileName,
+          buktiPembayaranType: fileType,
+        }),
+      });
+
+      console.log("Submission response status:", response.status);
+      const result = await response.json();
+      console.log("Submission result:", result);
+
+      if (response.ok && result.success) {
+        setIsSubmitting(false);
+        setShowSuccessModal(true);
+      } else {
+        throw new Error(result.error || "Submission failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage(
+        "Terjadi kesalahan saat mengirim data. Silakan coba lagi."
+      );
+      setShowErrorModal(true);
+      setIsSubmitting(false);
+    }
+  };
+
+>>>>>>> update-open-normal-v1
   if (isFormOpen === null) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -152,7 +311,127 @@ export default function DaftarBertigaPage() {
     );
   }
 
+<<<<<<< HEAD
   // Form buka - Redirect ke Google Form
+=======
+  const renderPesertaFields = (pesertaNum: number) => {
+    const prefix = `peserta${pesertaNum}`;
+    const status = formData[`${prefix}_status` as keyof typeof formData];
+
+    return (
+      <div key={pesertaNum} className="bg-gray-50 rounded-2xl p-6 space-y-4">
+        <h4 className="font-heading font-bold text-lg text-gray-800 mb-4">
+          Peserta {pesertaNum}
+        </h4>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Nama Lengkap *
+          </label>
+          <input
+            type="text"
+            name={`${prefix}_namaLengkap`}
+            value={formData[`${prefix}_namaLengkap` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Asal Instansi *
+          </label>
+          <input
+            type="text"
+            name={`${prefix}_asalInstansi`}
+            value={formData[`${prefix}_asalInstansi` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Status *
+          </label>
+          <select
+            name={`${prefix}_status`}
+            value={status as string}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+          >
+            <option value="Mahasiswa">Mahasiswa</option>
+            <option value="Pelajar">Pelajar</option>
+            <option value="Umum">Umum</option>
+          </select>
+        </div>
+
+        {status === "Mahasiswa" && (
+          <>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Jurusan *
+              </label>
+              <input
+                type="text"
+                name={`${prefix}_jurusan`}
+                value={formData[`${prefix}_jurusan` as keyof typeof formData]}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                NIM *
+              </label>
+              <input
+                type="text"
+                name={`${prefix}_nim`}
+                value={formData[`${prefix}_nim` as keyof typeof formData]}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+              />
+            </div>
+          </>
+        )}
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Nomor WhatsApp *
+          </label>
+          <input
+            type="tel"
+            name={`${prefix}_nomorWA`}
+            value={formData[`${prefix}_nomorWA` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            placeholder="08xxxxxxxxxx"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Email *
+          </label>
+          <input
+            type="email"
+            name={`${prefix}_email`}
+            value={formData[`${prefix}_email` as keyof typeof formData]}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+          />
+        </div>
+      </div>
+    );
+  };
+
+>>>>>>> update-open-normal-v1
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -164,6 +443,7 @@ export default function DaftarBertigaPage() {
           Kembali
         </Link>
 
+<<<<<<< HEAD
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -171,6 +451,106 @@ export default function DaftarBertigaPage() {
         >
           <div className="w-20 h-20 bg-pink/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <ExternalLink className="w-10 h-10 text-pink" />
+=======
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white rounded-3xl p-6 md:p-8 border-2 border-black shadow-xl"
+            >
+              <h1 className="font-heading font-bold text-3xl text-pink mb-2">
+                Formulir Pendaftaran
+              </h1>
+              <p className="text-gray-600 mb-6">{packageData.name}</p>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="bg-pink/10 rounded-2xl p-6 space-y-4">
+                  <h3 className="font-heading font-bold text-xl text-gray-800 mb-4">
+                    Data Pemesan
+                  </h3>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Nomor WhatsApp Pemesan *
+                    </label>
+                    <input
+                      type="tel"
+                      name="pemesanWA"
+                      value={formData.pemesanWA}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="08xxxxxxxxxx"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                      Email Pemesan *
+                    </label>
+                    <input
+                      type="email"
+                      name="pemesanEmail"
+                      value={formData.pemesanEmail}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-heading font-bold text-xl text-gray-800">
+                    Data Peserta (3 Orang)
+                  </h3>
+                  {[1, 2, 3].map((num) => renderPesertaFields(num))}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Upload Bukti Pembayaran *
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-pink transition-colors">
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                      id="bukti-pembayaran"
+                      required
+                    />
+                    <label
+                      htmlFor="bukti-pembayaran"
+                      className="cursor-pointer"
+                    >
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">
+                        {buktiPembayaran
+                          ? buktiPembayaran.name
+                          : "Klik untuk upload file"}
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-pink hover:bg-pink-600 text-white font-heading font-bold py-4 px-6 rounded-2xl transition-all border-2 border-black shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Mengirim...
+                    </>
+                  ) : (
+                    "Daftar Sekarang"
+                  )}
+                </button>
+              </form>
+            </motion.div>
+>>>>>>> update-open-normal-v1
           </div>
 
           <h1 className="font-heading font-bold text-3xl text-gray-800 mb-4">
