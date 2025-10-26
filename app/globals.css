@@ -25,12 +25,12 @@
   --color-teal: var(--teal);
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   :root {
     --background: #ffffff;
     --foreground: #ededed;
   }
-}
+} */
 
 @layer utilities {
   /* Mobile stroke (default) */

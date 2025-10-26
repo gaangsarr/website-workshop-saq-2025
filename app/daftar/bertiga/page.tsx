@@ -6,9 +6,10 @@ import { ArrowLeft, Upload, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
+import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
+  "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
 
 export default function DaftarBertigaPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
@@ -66,6 +67,11 @@ export default function DaftarBertigaPage() {
         method: "GET",
         cache: "no-cache",
       });
+      // const response = await fetch(SCRIPT_URL, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ action: "checkStatus" }),
+      // });
 
       console.log("Response status:", response.status);
 
@@ -106,6 +112,34 @@ export default function DaftarBertigaPage() {
     }
   };
 
+  const fillDummyData = () => {
+    setFormData({
+      pemesanWA: "081234567890",
+      pemesanEmail: "pemesan@example.com",
+      peserta1_namaLengkap: "Budi Santoso",
+      peserta1_asalInstansi: "Universitas Indonesia",
+      peserta1_status: "Mahasiswa",
+      peserta1_jurusan: "Teknik Informatika",
+      peserta1_nim: "2106123456",
+      peserta1_nomorWA: "081111111111",
+      peserta1_email: "budi@example.com",
+      peserta2_namaLengkap: "Siti Rahmawati",
+      peserta2_asalInstansi: "ITB",
+      peserta2_status: "Mahasiswa",
+      peserta2_jurusan: "Sistem Informasi",
+      peserta2_nim: "2107654321",
+      peserta2_nomorWA: "082222222222",
+      peserta2_email: "siti@example.com",
+      peserta3_namaLengkap: "Ahmad Hidayat",
+      peserta3_asalInstansi: "UNPAD",
+      peserta3_status: "Mahasiswa",
+      peserta3_jurusan: "Teknik Komputer",
+      peserta3_nim: "2108999888",
+      peserta3_nomorWA: "083333333333",
+      peserta3_email: "ahmad@example.com",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -129,64 +163,72 @@ export default function DaftarBertigaPage() {
         fileType = buktiPembayaran.type;
       }
 
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.name = "hidden_iframe";
-      document.body.appendChild(iframe);
+      // --- Log to server terminal ---
+      await fetch("/api/log-submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "Form Bertiga submitted",
+          data: {
+            pemesanWA: formData.pemesanWA,
+            pemesanEmail: formData.pemesanEmail,
+            peserta1_namaLengkap: formData.peserta1_namaLengkap,
+            peserta2_namaLengkap: formData.peserta2_namaLengkap,
+            peserta3_namaLengkap: formData.peserta3_namaLengkap,
+            fileName: fileName,
+          },
+        }),
+      });
+      // --- End Log to server terminal ---
 
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = SCRIPT_URL;
-      form.target = "hidden_iframe";
+      // ✅ SUBMIT TO API PROXY (instead of direct form submission)
+      // This avoids iOS Safari CORS issues by using server-to-server communication
+      const response = await fetch("/api/submit-registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jumlahPeserta: "3",
+          pemesanWA: formData.pemesanWA,
+          pemesanEmail: formData.pemesanEmail,
+          peserta1_namaLengkap: formData.peserta1_namaLengkap,
+          peserta1_asalInstansi: formData.peserta1_asalInstansi,
+          peserta1_status: formData.peserta1_status,
+          peserta1_jurusan: formData.peserta1_jurusan || "-",
+          peserta1_nim: formData.peserta1_nim || "-",
+          peserta1_nomorWA: formData.peserta1_nomorWA,
+          peserta1_email: formData.peserta1_email,
+          peserta2_namaLengkap: formData.peserta2_namaLengkap,
+          peserta2_asalInstansi: formData.peserta2_asalInstansi,
+          peserta2_status: formData.peserta2_status,
+          peserta2_jurusan: formData.peserta2_jurusan || "-",
+          peserta2_nim: formData.peserta2_nim || "-",
+          peserta2_nomorWA: formData.peserta2_nomorWA,
+          peserta2_email: formData.peserta2_email,
+          peserta3_namaLengkap: formData.peserta3_namaLengkap,
+          peserta3_asalInstansi: formData.peserta3_asalInstansi,
+          peserta3_status: formData.peserta3_status,
+          peserta3_jurusan: formData.peserta3_jurusan || "-",
+          peserta3_nim: formData.peserta3_nim || "-",
+          peserta3_nomorWA: formData.peserta3_nomorWA,
+          peserta3_email: formData.peserta3_email,
+          buktiPembayaranBase64: fileBase64,
+          buktiPembayaranName: fileName,
+          buktiPembayaranType: fileType,
+        }),
+      });
 
-      const fields = {
-        jumlahPeserta: "3",
-        pemesanWA: formData.pemesanWA,
-        pemesanEmail: formData.pemesanEmail,
-        peserta1_namaLengkap: formData.peserta1_namaLengkap,
-        peserta1_asalInstansi: formData.peserta1_asalInstansi,
-        peserta1_status: formData.peserta1_status,
-        peserta1_jurusan: formData.peserta1_jurusan || "-",
-        peserta1_nim: formData.peserta1_nim || "-",
-        peserta1_nomorWA: formData.peserta1_nomorWA,
-        peserta1_email: formData.peserta1_email,
-        peserta2_namaLengkap: formData.peserta2_namaLengkap,
-        peserta2_asalInstansi: formData.peserta2_asalInstansi,
-        peserta2_status: formData.peserta2_status,
-        peserta2_jurusan: formData.peserta2_jurusan || "-",
-        peserta2_nim: formData.peserta2_nim || "-",
-        peserta2_nomorWA: formData.peserta2_nomorWA,
-        peserta2_email: formData.peserta2_email,
-        peserta3_namaLengkap: formData.peserta3_namaLengkap,
-        peserta3_asalInstansi: formData.peserta3_asalInstansi,
-        peserta3_status: formData.peserta3_status,
-        peserta3_jurusan: formData.peserta3_jurusan || "-",
-        peserta3_nim: formData.peserta3_nim || "-",
-        peserta3_nomorWA: formData.peserta3_nomorWA,
-        peserta3_email: formData.peserta3_email,
-        buktiPembayaranBase64: fileBase64,
-        buktiPembayaranName: fileName,
-        buktiPembayaranType: fileType,
-      };
+      console.log("Submission response status:", response.status);
+      const result = await response.json();
+      console.log("Submission result:", result);
 
-      for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+      if (response.ok && result.success) {
+        setIsSubmitting(false);
+        setShowSuccessModal(true);
+      } else {
+        throw new Error(result.error || "Submission failed");
       }
-
-      document.body.appendChild(form);
-      form.submit();
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-
-      setIsSubmitting(false);
-      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage(
@@ -293,7 +335,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_namaLengkap` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
           />
         </div>
 
@@ -307,7 +349,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_asalInstansi` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
           />
         </div>
 
@@ -319,7 +361,7 @@ export default function DaftarBertigaPage() {
             name={`${prefix}_status`}
             value={status as string}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
           >
             <option value="Mahasiswa">Mahasiswa</option>
             <option value="Pelajar">Pelajar</option>
@@ -339,7 +381,7 @@ export default function DaftarBertigaPage() {
                 value={formData[`${prefix}_jurusan` as keyof typeof formData]}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
               />
             </div>
             <div>
@@ -352,7 +394,7 @@ export default function DaftarBertigaPage() {
                 value={formData[`${prefix}_nim` as keyof typeof formData]}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
               />
             </div>
           </>
@@ -369,7 +411,7 @@ export default function DaftarBertigaPage() {
             onChange={handleInputChange}
             required
             placeholder="08xxxxxxxxxx"
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
           />
         </div>
 
@@ -383,7 +425,7 @@ export default function DaftarBertigaPage() {
             value={formData[`${prefix}_email` as keyof typeof formData]}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
           />
         </div>
       </div>
@@ -499,7 +541,7 @@ export default function DaftarBertigaPage() {
                       onChange={handleInputChange}
                       required
                       placeholder="08xxxxxxxxxx"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
                     />
                   </div>
 
@@ -513,7 +555,7 @@ export default function DaftarBertigaPage() {
                       value={formData.pemesanEmail}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink focus:outline-none text-gray-800"
                     />
                   </div>
                 </div>

@@ -21,8 +21,8 @@ interface PackageConfig {
 
 export const ticketConfig = {
   salesStatus: {
-    isPreSaleOpen: true,
-    isNormalSaleOpen: false,
+    isPreSaleOpen: false,
+    isNormalSaleOpen: true,
     closedMessage:
       "Penjualan tiket sementara ditutup. Website sedang tahap pemeliharaan!",
     preSaleEndDate: "2025-10-10T23:59:59",
@@ -61,12 +61,12 @@ export const ticketConfig = {
       preSale: {
         enabled: true,
         price: 130000,
-        originalPrice: 165000,
+        originalPrice: 155000,
         quota: "Kuota Terbatas",
       },
       normalSale: {
         enabled: true,
-        price: 165000,
+        price: 155000,
         quota: "Kuota Tersedia",
       },
       features: [

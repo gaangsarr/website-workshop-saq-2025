@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
-import { Clock, AlertCircle } from "lucide-react";
+import { AlertCircle, Clock } from "lucide-react";
 import TiketCard from "./TiketCard";
+import { motion } from "framer-motion";
 
-export default function Tiket() {
+export default function TiketWrapper() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const { config, isSalesOpen } = useTicketConfig();
@@ -36,7 +36,7 @@ export default function Tiket() {
             Pilihan Paket
           </h2>
 
-          {/* Status Banner - Only render on client after mount */}
+          {/* Status Banner */}
           {isMounted && (
             <>
               {!isSalesOpen() && (

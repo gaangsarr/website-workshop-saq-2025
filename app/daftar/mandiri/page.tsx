@@ -9,7 +9,7 @@ import { useTicketConfig } from "@/hooks/useTicketConfig";
 import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw71puyUC_d9FU_GWi7Ksb1Hlw4h34mOJ907lpcRaZ7UUwMs5_uIrDmM-06FHmsbTwKSA/exec";
+  "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
 
 export default function DaftarMandiriPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();
@@ -45,9 +45,11 @@ export default function DaftarMandiriPage() {
 
   const checkFormStatus = async () => {
     try {
-      console.log("Fetching form status from:", SCRIPT_URL);
+      console.log("Fetching form status from API proxy");
 
-      const response = await fetch(`${SCRIPT_URL}?action=checkStatus`, {
+      // Call the Next.js API route instead of directly calling Google Apps Script
+      // This avoids CORS issues since the API route runs on the same origin
+      const response = await fetch("/api/check-quota", {
         method: "GET",
         cache: "no-cache",
       });
@@ -113,48 +115,36 @@ export default function DaftarMandiriPage() {
         fileType = buktiPembayaran.type;
       }
 
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.name = "hidden_iframe";
-      document.body.appendChild(iframe);
+      // ✅ SUBMIT TO API PROXY (instead of direct form submission)
+      // This avoids iOS Safari CORS issues by using server-to-server communication
+      const response = await fetch("/api/submit-registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jumlahPeserta: "1",
+          namaLengkap: formData.namaLengkap,
+          asalInstansi: formData.asalInstansi,
+          jurusan: formData.jurusan || "-",
+          nim: formData.nim || "-",
+          nomorWA: formData.nomorWA,
+          email: formData.email,
+          status: formData.status,
+          buktiPembayaranBase64: fileBase64,
+          buktiPembayaranName: fileName,
+          buktiPembayaranType: fileType,
+        }),
+      });
 
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = SCRIPT_URL;
-      form.target = "hidden_iframe";
+      console.log("Submission response status:", response.status);
+      const result = await response.json();
+      console.log("Submission result:", result);
 
-      const fields = {
-        jumlahPeserta: "1",
-        namaLengkap: formData.namaLengkap,
-        asalInstansi: formData.asalInstansi,
-        jurusan: formData.jurusan || "-",
-        nim: formData.nim || "-",
-        nomorWA: formData.nomorWA,
-        email: formData.email,
-        status: formData.status,
-        buktiPembayaranBase64: fileBase64,
-        buktiPembayaranName: fileName,
-        buktiPembayaranType: fileType,
-      };
-
-      for (const [key, value] of Object.entries(fields)) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+      if (response.ok && result.success) {
+        setIsSubmitting(false);
+        setShowSuccessModal(true);
+      } else {
+        throw new Error(result.error || "Submission failed");
       }
-
-      document.body.appendChild(form);
-      form.submit();
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-
-      setIsSubmitting(false);
-      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage(
@@ -344,7 +334,7 @@ export default function DaftarMandiriPage() {
                     value={formData.namaLengkap}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                   />
                 </div>
 
@@ -358,7 +348,7 @@ export default function DaftarMandiriPage() {
                     value={formData.asalInstansi}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                   />
                 </div>
 
@@ -370,7 +360,7 @@ export default function DaftarMandiriPage() {
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                   >
                     <option value="Mahasiswa">Mahasiswa</option>
                     <option value="Pelajar">Pelajar</option>
@@ -390,7 +380,7 @@ export default function DaftarMandiriPage() {
                         value={formData.jurusan}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                       />
                     </div>
                     <div>
@@ -403,7 +393,7 @@ export default function DaftarMandiriPage() {
                         value={formData.nim}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                       />
                     </div>
                   </>
@@ -420,7 +410,7 @@ export default function DaftarMandiriPage() {
                     onChange={handleInputChange}
                     required
                     placeholder="08xxxxxxxxxx"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                   />
                 </div>
 
@@ -434,7 +424,7 @@ export default function DaftarMandiriPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-biru focus:outline-none text-gray-800"
                   />
                 </div>
 
