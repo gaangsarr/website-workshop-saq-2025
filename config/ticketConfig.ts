@@ -75,7 +75,7 @@ export const ticketConfig = {
         "Sertifikat hardskill peserta",
         "Grup WhatsApp",
         "Pre-Workshop",
-        "Hemat Rp 35.000!",
+        "Hemat Rp 10.000!",
       ],
       color: "bg-pink",
       hoverColor: "hover:bg-pink-500",

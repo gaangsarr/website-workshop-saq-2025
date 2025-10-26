@@ -8,6 +8,10 @@
   --merah: #ff1d21;
   --oren: #ffa726;
   --teal: #009688;
+
+  /* Force light mode colors */
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
@@ -24,13 +28,6 @@
   --color-oren: var(--oren);
   --color-teal: var(--teal);
 }
-
-/* @media (prefers-color-scheme: light) {
-  :root {
-    --background: #ffffff;
-    --foreground: #ededed;
-  }
-} */
 
 @layer utilities {
   /* Mobile stroke (default) */
@@ -59,8 +56,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #ffffff;
+  color: #171717;
 }
 
 /* Smooth Scroll Behavior */
@@ -70,10 +67,10 @@ html {
 
 /* Scroll Offset untuk Sticky Navbar */
 section[id] {
-  scroll-margin-top: 5rem; /* 80px = height navbar */
+  scroll-margin-top: 5rem;
 }
 
-/* Optional: Custom Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -83,12 +80,12 @@ section[id] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4169e1; /* Biru */
+  background: #4169e1;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffd700; /* Kuning */
+  background: #ffd700;
 }
 
 .perspective-1000 {
