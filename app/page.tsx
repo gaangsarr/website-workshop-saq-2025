@@ -9,6 +9,7 @@ import ScrollingText1 from "@/components/ScrollingText-KURSITERBATAS";
 import GamePromo from "@/components/GamePromo";
 import ChatBot from "@/components/ChatBot";
 import RegistrationStats from "@/components/RegistrationStats";
+import LocationMap from "@/components/LocationMap";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <Tiket />
       <RegistrationStats />
       <ScrollingText1 />
+      <LocationMap />
       <GamePromo />
       <FAQ />
       <SpecialThanks />

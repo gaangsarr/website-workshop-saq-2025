@@ -21,7 +21,7 @@ export default function Tiket() {
   return (
     <section
       ref={ref}
-      className="relative py-16 md:py-24 bg-white overflow-hidden"
+      className="relative py-16 md:py-24 bg-teal overflow-hidden"
       id="register"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
