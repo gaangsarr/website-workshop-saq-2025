@@ -10,7 +10,7 @@ export default function LocationMap() {
   const googleMapsUrl = "https://maps.app.goo.gl/NJjrhNDYCFvWjvfV9";
 
   const address =
-    "Jl. Lingkar Luar Barat No.1, Duri Kosambi, Kec. Cengkareng, Jakarta Barat 11750";
+    "Menara PLN, Jl. Outer Ring Road, RT.1/RW.1, Duri Kosambi, Kecamatan Cengkareng, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11750";
 
   return (
     <section className="py-16 md:py-24 bg-white" id="location">
