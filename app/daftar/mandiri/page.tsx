@@ -148,7 +148,7 @@ export default function DaftarMandiriPage() {
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage(
-        "Terjadi kesalahan saat mengirim data. Silakan coba lagi."
+        "Terjadi kesalahan saat mengirim data. Silakan coba lagi. Hubungi 0881037192867 (Tria) Apabila Pendaftaran Gagal!"
       );
       setShowErrorModal(true);
       setIsSubmitting(false);
