@@ -22,9 +22,9 @@ interface PackageConfig {
 export const ticketConfig = {
   salesStatus: {
     isPreSaleOpen: false,
-    isNormalSaleOpen: true,
+    isNormalSaleOpen: false,
     closedMessage:
-      "Penjualan tiket Pre-Sale sudah HABIS. Coming Soon NORMAL SALE!",
+      "SELURUH TIKET SUDAH SOLD OUT, TERIMA KASIH ATAS ANTUSIASME TEMAN-TEMAN!",
     preSaleEndDate: "2025-10-10T23:59:59",
   },
   packages: {

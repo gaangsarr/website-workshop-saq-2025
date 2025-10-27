@@ -33,7 +33,7 @@ Informasi Workshop:
 - Lokasi: Ruang Pembangkit, Lantai 2, Institut Teknologi PLN
 - Alamat: Menara PLN, Jl. Lingkar Luar Barat, RT.1/RW.1, Duri Kosambi, Kecamatan Cengkareng, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11750
 - Kuota: 112 peserta
-- Sisa kuota: Diupdate dihalaman bagian bawah, update otomatis.
+- Sisa kuota: SELURUH KUOTA SUDAH HABIS TERJUAL!
 - Supported by: Institut Teknologi PLN, Fakultas Telematika Energi, Asisten Laboratorium Komputer, Laboratorium Software Architecture & Quality
 
 Harga:

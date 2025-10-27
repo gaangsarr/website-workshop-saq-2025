@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTicketConfig } from "@/hooks/useTicketConfig";
-import { Clock, AlertCircle } from "lucide-react";
+import { Clock } from "lucide-react";
 import TiketCard from "./TiketCard";
 
 export default function Tiket() {
@@ -41,7 +41,6 @@ export default function Tiket() {
             <>
               {!isSalesOpen() && (
                 <div className="inline-flex items-center gap-3 bg-yellow-100 border-2 border-yellow-400 text-yellow-800 px-6 py-3 rounded-2xl mt-4">
-                  <AlertCircle className="w-5 h-5" />
                   <p className="font-heading font-bold">
                     {config.salesStatus.closedMessage}
                   </p>
