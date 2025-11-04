@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Users, TrendingUp, Clock, Loader2, AlertCircle } from "lucide-react";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
+  "https://script.google.com/macros/s/AKfycbwRI21VPRj8bl89PNJZot0YWIO7I4qdDO-3gVZFvqH5hVvahrXYSRX-8Xuk2baEvUZ3gA/exec";
 
 interface StatsData {
   totalPeserta: number;
@@ -106,7 +106,7 @@ export default function RegistrationStats() {
                   }`}
                 />
                 <p className="text-sm font-heading font-bold text-gray-700">
-                  {stats.isPresale ? "Pre-Sale Aktif" : "Pendaftaran Normal"}
+                  {stats.isPresale ? "Pre-Sale Aktif" : "Pendaftaran LAST CALL"}
                 </p>
               </div>
             </div>
@@ -186,11 +186,11 @@ export default function RegistrationStats() {
                 <span
                   className={`font-heading font-bold text-xs px-3 py-1 rounded-full border-2 border-black ${
                     stats.bertigaOpen
-                      ? "bg-green-400 text-white"
+                      ? "bg-red-400 text-white"
                       : "bg-red-400 text-white"
                   }`}
                 >
-                  {stats.bertigaOpen ? "✓ Buka" : "✗ Tutup"}
+                  {stats.bertigaOpen ? "✗ Tutup" : "✗ Tutup"}
                 </span>
               </div>
               <h3 className="font-heading font-bold text-sm text-gray-600 mb-2">

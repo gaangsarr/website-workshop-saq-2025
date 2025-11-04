@@ -29,7 +29,7 @@ export default function TiketCard({ packageId, index }: TiketCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative"
+      className="relative w-full min-w-[300px] max-w-[450px]"
     >
       {/* Badge */}
       {pkg.isPreSale && (
@@ -43,7 +43,7 @@ export default function TiketCard({ packageId, index }: TiketCardProps) {
 
       {pkg.badge && !pkg.isPreSale && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-          <div className="bg-kuning text-white px-4 py-1 rounded-full text-sm font-heading font-bold border-2 border-black shadow-lg">
+          <div className="bg-merah text-white px-4 py-1 rounded-full text-sm font-heading font-bold border-2 border-black shadow-lg">
             {pkg.badge}
           </div>
         </div>

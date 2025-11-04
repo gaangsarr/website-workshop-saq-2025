@@ -9,7 +9,7 @@ import { useTicketConfig } from "@/hooks/useTicketConfig";
 import { ticketConfig } from "@/config/ticketConfig"; // ← TAMBAH INI
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw0YbOZFRWhWe928TRLjPtdNxWHJXaoCfWN1ri2An8WUShWiLYZiTS8fpIguT34wrYU-A/exec";
+  "https://script.google.com/macros/s/AKfycbwRI21VPRj8bl89PNJZot0YWIO7I4qdDO-3gVZFvqH5hVvahrXYSRX-8Xuk2baEvUZ3gA/exec";
 
 export default function DaftarMandiriPage() {
   const { getActivePackage, formatPrice } = useTicketConfig();

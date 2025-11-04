@@ -60,13 +60,8 @@ export default function Tiket() {
         </motion.div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {isMounted && (
-            <>
-              <TiketCard packageId="mandiri" index={0} />
-              <TiketCard packageId="bertiga" index={1} />
-            </>
-          )}
+        <div className="flex justify-center max-w-4xl mx-auto">
+          {isMounted && <TiketCard packageId="mandiri" index={0} />}
         </div>
       </div>
     </section>

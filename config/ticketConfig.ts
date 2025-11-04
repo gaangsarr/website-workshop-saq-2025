@@ -22,7 +22,7 @@ interface PackageConfig {
 export const ticketConfig = {
   salesStatus: {
     isPreSaleOpen: false,
-    isNormalSaleOpen: false,
+    isNormalSaleOpen: true,
     closedMessage:
       "SELURUH TIKET SUDAH SOLD OUT, TERIMA KASIH ATAS ANTUSIASME TEMAN-TEMAN!",
     preSaleEndDate: "2025-10-10T23:59:59",
@@ -32,7 +32,7 @@ export const ticketConfig = {
       id: "mandiri",
       name: "Paket Mandiri",
       participants: "1 Orang",
-      badge: "Gokil",
+      badge: "LAST CALL",
       preSale: {
         enabled: true,
         price: 45000,
@@ -41,7 +41,7 @@ export const ticketConfig = {
       },
       normalSale: {
         enabled: true,
-        price: 55000,
+        price: 70000,
         quota: "Kuota Tersedia",
       },
       features: [
